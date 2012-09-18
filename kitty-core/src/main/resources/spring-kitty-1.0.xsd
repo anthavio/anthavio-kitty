@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-	xmlns="http://www.komix.com/schema/kitty" targetNamespace="http://www.komix.com/schema/kitty"
+	xmlns="http://anthavio.com/schema/kitty" targetNamespace="http://anthavio.com/schema/kitty"
 	elementFormDefault="qualified" attributeFormDefault="unqualified">
 
 
