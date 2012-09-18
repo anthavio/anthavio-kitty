@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:ctx="http://www.springframework.org/schema/context"
+	xmlns:sec="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+
+	<bean id="FilterSecurityInterceptor" class="org.springframework.security.web.access.intercept.FilterSecurityInterceptor">
+		<property name="authenticationManager" ref="AuthenticationManager"/>
+		<property name="accessDecisionManager" ref="WebAccessDecisionManager"/>
+		<property name="securityMetadataSource">
+			<sec:filter-security-metadata-source request-matcher="ant" use-expressions="false">
+				<sec:intercept-url pattern="/**" access="NsSisAdmin" />
+			</sec:filter-security-metadata-source>
+		</property>
+	</bean>
+
+	<bean id="AuthenticationManager" class="org.springframework.security.authentication.ProviderManager">
+		<property name="providers">
+			<list>
+				<ref local="BasicAuthenticationProvider"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="WebAccessDecisionManager" class="org.springframework.security.access.vote.AffirmativeBased">
+		<property name="allowIfAllAbstainDecisions" value="false"/>
+		<property name="decisionVoters">
+			<list>
+				<bean id="RoleHierarchyVoter" class="org.springframework.security.access.vote.RoleHierarchyVoter">
+					<constructor-arg ref="KittyRoleHierarchy"/>
+					<property name="rolePrefix" value="ROLE_"/>
+				</bean>
+				<bean id="WebExpressionVoter" class="org.springframework.security.web.access.expression.WebExpressionVoter">
+					<property name="expressionHandler" ref="WebExpressionHandler" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="WebExpressionHandler" class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler">
+		<property name="roleHierarchy" ref="KittyRoleHierarchy" />
+	</bean>
+	
+	<bean id="KittyRoleHierarchy" class="org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl">
+		<property name="hierarchy">
+			<value>
+				ROLE_ADMIN > ROLE_USER
+				ROLE_USER > ROLE_AUTHENTICATED
+			</value>
+		</property>
+	</bean>
+	
+	<!-- BASIC -->
+	
+	<bean id="SpringSecurityFilterChain" class="org.springframework.security.web.FilterChainProxy">
+		<sec:filter-chain-map request-matcher="ant">
+			<sec:filter-chain pattern="/res/**" filters="none"/>
+			<sec:filter-chain pattern="/**" filters="
+				SecurityContextPersistenceFilter,
+				BasicAuthenticationFilter,
+				BasicExceptionTranslationFilter,
+				FilterSecurityInterceptor"
+			/>
+		</sec:filter-chain-map>
+	</bean>
+	
+	<bean id="SecurityContextPersistenceFilter" class="org.springframework.security.web.context.SecurityContextPersistenceFilter">
+		<property name="securityContextRepository">
+			<bean class="org.springframework.security.web.context.HttpSessionSecurityContextRepository">
+				<property name="allowSessionCreation" value="true" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="BasicAuthenticationFilter" class="org.springframework.security.web.authentication.www.BasicAuthenticationFilter">
+		<property name="authenticationManager" ref="AuthenticationManager"/>
+		<property name="authenticationEntryPoint" ref="BasicAuthenticationEntryPoint"/>
+	</bean>
+
+	<bean id="BasicAuthenticationEntryPoint" class="org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint">
+		<property name="realmName" value="KittyRealm"/>
+	</bean>	
+	
+	<bean id="BasicExceptionTranslationFilter" class="org.springframework.security.web.access.ExceptionTranslationFilter">
+		<property name="authenticationEntryPoint" ref="BasicAuthenticationEntryPoint"/>
+		<property name="accessDeniedHandler" ref="BasicAccessDeniedHandler"/>
+	</bean>				
+
+	<bean id="BasicAccessDeniedHandler" class="org.springframework.security.web.access.AccessDeniedHandlerImpl"/>
+	
+	<bean id="BasicAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+		<property name="userDetailsService" ref="KittyUserDetailsService"/>
+		<property name="hideUserNotFoundExceptions" value="false"/>
+	</bean>
+	
+</beans>

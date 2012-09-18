@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:trx="http://www.springframework.org/schema/tx"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:ctx="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+ 
+	<ctx:annotation-config/>
+	
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="${kitty.props:kitty-tap.properties}"/>
+		<property name="fileEncoding" value="UTF-8"/>
+		<property name="searchSystemEnvironment" value="true"/>
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+	</bean>
+	
+	<!-- JDBC -->
+	
+	<bean id="PdbDataSource" class="com.atomikos.jdbc.AtomikosDataSourceBean" init-method="init" destroy-method="close">
+		<property name="xaDataSourceClassName" value="${pdb.db.driver}"/>
+		<property name="uniqueResourceName" value="xaPdbDS"/>
+		<property name="minPoolSize" value="1"/>
+		<property name="maxPoolSize" value="5"/>
+		<property name="xaProperties">
+			<props>
+				<prop key="URL">${pdb.db.url}</prop>
+				<prop key="user">${pdb.db.username}</prop>
+				<prop key="password">${pdb.db.password}</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="AnotherDataSource" class="com.atomikos.jdbc.AtomikosDataSourceBean" init-method="init" destroy-method="close">
+		<property name="xaDataSourceClassName" value="${pdb.db.driver}"/>
+		<property name="uniqueResourceName" value="xaAnotherDS"/>
+		<property name="minPoolSize" value="1"/>
+		<property name="maxPoolSize" value="5"/>
+		<property name="xaProperties">
+			<props>
+				<prop key="URL">${pdb.db.url}</prop>
+				<prop key="user">${pdb.db.username}</prop>
+				<prop key="password">${pdb.db.password}</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<!-- JTA -->
+	
+	<bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
+		<property name="transactionManager" ref="AtomikosTransactionManager" />
+		<property name="userTransaction" ref="AtomikosUserTransaction" />
+	</bean>
+
+	<bean id="AtomikosTransactionService" class="com.atomikos.icatch.config.UserTransactionServiceImp"  
+		init-method="init" destroy-method="shutdownWait">
+		<constructor-arg>
+			<props>
+				<prop key="com.atomikos.icatch.service">com.atomikos.icatch.standalone.UserTransactionServiceFactory</prop>
+				<prop key="com.atomikos.icatch.output_dir">target/atomikos</prop>
+				<prop key="com.atomikos.icatch.log_base_dir">target/atomikos</prop>
+				<prop key="com.atomikos.icatch.console_file_name">test_tm.out</prop>
+				<prop key="com.atomikos.icatch.log_base_name">test_tm.log</prop>
+				<prop key="com.atomikos.icatch.tm_unique_name">test_tm</prop>
+				<prop key="com.atomikos.icatch.console_log_level">INFO</prop>
+			</props>
+		</constructor-arg>
+	</bean>
+	
+	<bean id="AtomikosTransactionManager" class="com.atomikos.icatch.jta.UserTransactionManager" depends-on="AtomikosTransactionService"
+		init-method="init" destroy-method="close">
+		<property name="transactionTimeout" value="180" />
+		<property name="forceShutdown" value="true" />
+	</bean>
+
+	<bean id="AtomikosUserTransaction" class="com.atomikos.icatch.jta.UserTransactionImp" depends-on="AtomikosTransactionService">
+		<property name="transactionTimeout" value="60" />
+	</bean>
+
+	<!-- JPA -->
+	
+	<bean id="JpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+		<property name="databasePlatform" value="org.hibernate.dialect.Oracle10gDialect" />
+		<property name="database" value="ORACLE" />
+	</bean>
+	
+	<util:properties id="JpaProperties">
+		<prop key="hibernate.transaction.manager_lookup_class">com.atomikos.icatch.jta.hibernate3.TransactionManagerLookup</prop>
+		<prop key="hibernate.hbm2ddl.auto">create-drop</prop>
+	</util:properties>
+	
+	<!-- WSEBSERVICE -->
+
+	<alias alias="messageFactory" name="AxiomSoapMessageFactory" />
+
+	<bean id="AxiomSoapMessageFactory" class="org.springframework.ws.soap.axiom.AxiomSoapMessageFactory">
+		<property name="payloadCaching" value="true" />
+		<property name="soapVersion" value="SOAP_11"/>
+	</bean>
+
+	<bean id="BaseWebServiceTemplate" abstract="true" class="org.springframework.ws.client.core.WebServiceTemplate">
+		<constructor-arg ref="AxiomSoapMessageFactory" />
+	</bean>
+
+	<bean id="BaseJaxbBinder" abstract="true" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+		<property name="mtomEnabled" value="true"/>
+		<property name="marshallerProperties" ref="JaxbMarshallerProperties"/>
+	</bean>
+	
+	<util:map id="JaxbMarshallerProperties">
+		<entry>
+			<key><util:constant static-field="javax.xml.bind.Marshaller.JAXB_ENCODING"/></key>
+			<value type="java.lang.String">utf-8</value>
+		</entry>
+		<entry>
+			<key><util:constant static-field="javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT"/></key>
+			<value type="java.lang.Boolean">true</value>
+		</entry>
+		<entry key="com.sun.xml.bind.namespacePrefixMapper" value-ref="NamespaceMapper"/>
+	</util:map>
+	
+	<bean id="NamespaceMapper" class="com.anthavio.xml.NamespaceMapper">
+		<property name="pefixToUriMap">
+			<map>
+				<entry key="xmsg" value="http://example.komix.cz/messages"/>
+				<entry key="xdtp" value="http://example.komix.cz/types"/>
+			</map>
+		</property>
+	</bean>
+</beans>

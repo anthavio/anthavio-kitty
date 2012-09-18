@@ -1,0 +1,184 @@
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
+
+<Configure id="Server" class="org.eclipse.jetty.server.Server">
+
+	<Call name="addBean">
+		<Arg>
+			<New class="com.anthavio.jetty.SpringContextDeployer">
+				<Set name="parentContextKey">kitty-lib</Set>
+			</New>
+		</Arg>
+	</Call>
+
+	<Set name="ThreadPool">
+		<New class="org.eclipse.jetty.util.thread.QueuedThreadPool">
+		<!--<New class="org.mortbay.thread.BoundedThreadPool">-->
+			<Set name="minThreads">1</Set>
+			<Set name="maxThreads">20</Set>
+			<Set name="name">http</Set>
+		</New>
+	</Set>
+
+	<Call name="addConnector">
+		<Arg>
+			<New class="org.eclipse.jetty.server.nio.SelectChannelConnector">
+				<Set name="host">0.0.0.0</Set> 
+				<Set name="port">5959</Set>
+				<Set name="acceptors">2</Set>
+				<Set name="statsOn">false</Set>
+				<Set name="maxIdleTime">30000</Set>
+				<Set name="confidentialPort">6969</Set>
+				<Set name="lowResourcesConnections">5000</Set>
+				<Set name="lowResourcesMaxIdleTime">5000</Set>
+			</New>
+		</Arg>
+	</Call>
+
+	<Call name="addConnector">
+		<Arg>
+			<New class="org.eclipse.jetty.server.ssl.SslSelectChannelConnector">
+				<Set name="host">0.0.0.0</Set> 
+				<Set name="port">6969</Set>
+				<Set name="maxIdleTime">30000</Set>
+				<Set name="keystore"><SystemProperty name="jetty.home" default="."/>/etc/localhost.jks</Set>
+				<Set name="password">kokosak</Set>
+				<Set name="keyPassword">kokosak</Set>
+				<Set name="truststore"><SystemProperty name="jetty.home" default="."/>/etc/localhost.jks</Set>
+				<Set name="trustPassword">kokosak</Set>
+				<Set name="needClientAuth">false</Set>
+			</New>
+		</Arg>
+	</Call>
+	
+	<Call name="addConnector">
+		<Arg>
+			<New class="org.eclipse.jetty.server.ssl.SslSelectChannelConnector">
+				<Set name="Host">0.0.0.0</Set> 
+				<Set name="Port">7979</Set>
+				<Set name="maxIdleTime">30000</Set>
+				<Set name="keystore"><SystemProperty name="jetty.home" default="."/>/etc/localhost.jks</Set>
+				<Set name="password">kokosak</Set>
+				<Set name="keyPassword">kokosak</Set>
+				<Set name="truststore"><SystemProperty name="jetty.home" default="."/>/etc/localhost.jks</Set>
+				<Set name="trustPassword">kokosak</Set>
+				<Set name="needClientAuth">true</Set>
+			</New>
+		</Arg>
+	</Call>
+
+	<Set name="handler">
+		<New id="Handlers" class="org.eclipse.jetty.server.handler.HandlerCollection">
+			<Set name="handlers">
+				<Array type="org.eclipse.jetty.server.Handler">
+					<Item>
+						<New id="Contexts" class="org.eclipse.jetty.server.handler.ContextHandlerCollection" />
+					</Item>
+				</Array>
+			</Set>
+		</New>
+	</Set>
+
+	<Array id="PlusConfig" type="java.lang.String">
+		<Item>org.eclipse.jetty.webapp.WebInfConfiguration</Item>
+		<Item>org.eclipse.jetty.webapp.WebXmlConfiguration</Item>
+		<Item>org.eclipse.jetty.webapp.MetaInfConfiguration</Item>
+		<Item>org.eclipse.jetty.webapp.FragmentConfiguration</Item>
+		<Item>org.eclipse.jetty.webapp.JettyWebXmlConfiguration</Item>
+		<Item>org.eclipse.jetty.webapp.TagLibConfiguration</Item>
+		<Item>org.eclipse.jetty.annotations.AnnotationConfiguration</Item>
+		<Item>org.eclipse.jetty.plus.webapp.EnvConfiguration</Item>
+		<Item>org.eclipse.jetty.plus.webapp.PlusConfiguration</Item>
+	</Array>
+	
+	<New class="com.anthavio.jetty.WebAppContext">
+		<Arg><Ref id="Contexts"/></Arg>
+		<Set name="contextPath">/kitty-webmvc</Set>
+		<Set name="baseResource">
+			<New class="org.eclipse.jetty.util.resource.ResourceCollection">
+				<Arg>
+					<Array type="java.lang.String">
+						<Item><SystemProperty name="jetty.home" default="."/>/../webapp</Item>
+						<Item><SystemProperty name="jetty.home" default="."/>/../../../../../kitty-web/src/main/webapp</Item>
+					</Array>
+				</Arg>
+			</New>
+		</Set>
+		<Set name="defaultsDescriptor"><SystemProperty name="jetty.home" default="."/>/etc/webdefault.xml</Set>
+		<Set name="configurationClasses"><Ref id="PlusConfig" /></Set>
+		<Call name="setAttribute">
+			<Arg>org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern</Arg>
+			<Arg>.*/.*\.jar$</Arg>
+		</Call>
+	</New>
+
+	<New class="com.anthavio.jetty.WebAppContext">
+		<Arg><Ref id="Contexts"/></Arg>
+		<Set name="contextPath">/kitty-vaadin</Set>
+		<Set name="war"><SystemProperty name="jetty.home" default="."/>/../../../../../kitty-vaadin/src/main/webapp</Set>
+		<Set name="defaultsDescriptor"><SystemProperty name="jetty.home" default="."/>/etc/webdefault.xml</Set>
+		<Set name="configurationClasses"><Ref id="PlusConfig" /></Set>
+		<Call name="setAttribute">
+			<Arg>org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern</Arg>
+			<Arg>.*/.*\.jar$</Arg>
+		</Call>
+	</New>
+
+	<!--
+	<Call name="addBean">
+		<Arg>
+			<New class="com.anthavio.jetty.WebContextDeployer">
+				<Set name="contexts"><Ref id="Contexts" /></Set>
+				<Set name="contextPath">/tap</Set>
+				<Set name="war"><SystemProperty name="jetty.home" default="."/>/../../../../tap-web/src/main/webapp</Set>
+				<Set name="defaultsDescriptor"><SystemProperty name="jetty.home" default="."/>/etc/webdefault.xml</Set>
+				<Set name="configurationClasses"><Ref id="PlusConfig" /></Set>
+			</New>
+		</Arg>
+	</Call>
+	-->
+	<!--
+	<New class="com.anthavio.jetty.WebAppContext">
+		<Arg><Ref id="Contexts"/></Arg>
+		<Set name="contextPath">/tap</Set>
+		<Set name="war"><SystemProperty name="jetty.home" default="."/>/../../../../tap-web/src/main/webapp</Set>
+		<Set name="defaultsDescriptor"><SystemProperty name="jetty.home" default="."/>/etc/webdefault.xml</Set>
+		<Set name="configurationClasses"><Ref id="PlusConfig" /></Set>
+		<Call name="setAttribute">
+			<Arg>org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern</Arg>
+			<Arg>.*/.*\.jar$</Arg>
+		</Call>
+	</New>
+	-->
+	<!--
+	<New class="com.anthavio.jetty.WebAppContext">
+		<Arg><Ref id="Contexts"/></Arg>
+		<Set name="contextPath">/kitty-webmvc</Set>
+		<Set name="war"><SystemProperty name="jetty.home" default="."/>/../../../../../kitty-web/src/main/webapp</Set>
+		<Set name="defaultsDescriptor"><SystemProperty name="jetty.home" default="."/>/etc/webdefault.xml</Set>
+		<Set name="configurationClasses"><Ref id="PlusConfig" /></Set>
+		<Call name="setAttribute">
+			<Arg>org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern</Arg>
+			<Arg>.*/.*\.jar$</Arg>
+		</Call>
+	</New>
+	-->
+<!--	
+	<New class="com.anthavio.jetty.WebAppContext">
+		<Arg><Ref id="Contexts"/></Arg>
+		<Set name="contextPath">/kitty-vaadin</Set>
+		<Set name="war"><SystemProperty name="jetty.home" default="."/>/../../../../../kitty-vaadin/src/main/webapp</Set>
+		<Set name="defaultsDescriptor"><SystemProperty name="jetty.home" default="."/>/etc/webdefault.xml</Set>
+		<Set name="configurationClasses"><Ref id="PlusConfig" /></Set>
+		<Call name="setAttribute">
+			<Arg>org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern</Arg>
+			<Arg>.*/.*\.jar$</Arg>
+		</Call>
+	</New>
+-->
+	<Set name="stopAtShutdown">true</Set>
+	<Set name="sendServerVersion">true</Set>
+	<Set name="sendDateHeader">true</Set>
+	<Set name="gracefulShutdown">5000</Set>
+
+</Configure>

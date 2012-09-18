@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>com.anthavio.kitty</groupId>
+		<artifactId>kitty-project</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+	
+	<artifactId>kitty-vaadin</artifactId>
+	<packaging>war</packaging>
+	
+	<name>kitty-vaadin</name>
+
+	<description>Kitty Vaadin GUI</description>
+	
+	<dependencies>
+
+		<dependency>
+			<groupId>com.anthavio.kitty</groupId>
+			<artifactId>kitty-jetty</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.0-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+			<version>2.4.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin</artifactId>
+			<version>6.8.3</version>
+		</dependency>
+	
+		<dependency>
+			<groupId>org.dellroad</groupId>
+			<artifactId>dellroad-stuff-vaadin</artifactId>
+			<version>1.0.420</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		
+	</dependencies>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+			
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-war-plugin</artifactId>
+					<configuration>
+						<attachClasses>true</attachClasses>
+					</configuration>
+				</plugin>
+			
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<configuration>
+						<!-- release:perform add sources&javadoc -->
+						<useReleaseProfile>true</useReleaseProfile>
+					</configuration>
+				</plugin>
+				
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>gwt-maven-plugin</artifactId>
+					<version>2.4.0</version>
+					<configuration>
+						<webappDirectory>${project.build.directory}/${project.build.finalName}/VAADIN/widgetsets</webappDirectory>
+						<extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
+						<runTarget>clean</runTarget>
+						<hostedWebapp>${project.build.directory}/${project.build.finalName}</hostedWebapp>
+						<noServer>true</noServer>
+						<port>8080</port>
+						<soyc>false</soyc>
+					</configuration>
+					<executions>
+						<execution>
+							<goals>
+								<goal>resources</goal>
+								<goal>compile</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				
+				<plugin>
+					<groupId>com.vaadin</groupId>
+					<artifactId>vaadin-maven-plugin</artifactId>
+					<version>1.0.2</version>
+					<executions>
+						<execution>
+							<phase>install</phase>
+							<goals>
+								<goal>update-widgetset</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		
+		<plugins>
+		
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+			</plugin>
+					
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>aspectj-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<aspectLibraries>
+						<aspectLibrary>
+							<groupId>org.springframework</groupId>
+							<artifactId>spring-aspects</artifactId>
+						</aspectLibrary>
+						<aspectLibrary>
+							<groupId>com.anthavio</groupId>
+							<artifactId>anthavio-aspects</artifactId>
+						</aspectLibrary>
+					</aspectLibraries>
+				</configuration>
+			</plugin>
+<!--
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<configuration>
+					<reportPlugins>
+
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-project-info-reports-plugin</artifactId>
+							<reports>
+								<report>index</report>
+								<report>summary</report>
+								<report>cim</report>
+								<report>scm</report>
+								<report>project-team</report>
+								<report>issue-tracking</report>
+								<report>dependency-management</report>
+								<report>dependency-convergence</report>
+								<report>dependencies</report>
+								<report>plugin-management</report>
+								<report>plugins</report>
+							</reports>
+						</plugin>
+
+						<plugin>
+							<groupId>de.smartics.maven.plugin</groupId>
+							<artifactId>maven-buildmetadata-plugin</artifactId>
+							<reports>
+								<report>buildmetadata-report</report>
+							</reports>
+						</plugin>
+						
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-surefire-report-plugin</artifactId>
+							<reports>
+								<report>report-only</report>
+							</reports>
+						</plugin>
+						
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-changes-plugin</artifactId>
+							<configuration>
+								<xmlPath>${basedir}/src/changes.xml</xmlPath>
+							</configuration>
+							<reports>
+								<report>changes-report</report>
+							</reports>
+						</plugin>
+						
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-changelog-plugin</artifactId>
+						</plugin>
+
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-javadoc-plugin</artifactId>
+							<configuration>
+								<quiet>true</quiet>
+								<encoding>${project.build.sourceEncoding}</encoding>
+								<docencoding>${project.build.sourceEncoding}</docencoding>
+							</configuration>
+						</plugin>
+			
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-jxr-plugin</artifactId>
+							<configuration>
+								<inputEncoding>${project.build.sourceEncoding}</inputEncoding>
+								<outputEncoding>${project.build.sourceEncoding}</outputEncoding>
+							</configuration>
+						</plugin>
+						
+						<plugin>
+							<groupId>org.codehaus.mojo</groupId>
+							<artifactId>taglist-maven-plugin</artifactId>
+							<configuration>
+								<encoding>${project.build.sourceEncoding}</encoding>
+								<testXrefLocation>${project.reporting.outputDirectory}/xref</testXrefLocation>
+								<tagListOptions>
+									<tagClasses>
+										<tagClass>
+											<displayName>Code Work</displayName>
+											<tags>
+												<tag>
+													<matchString>FIXME</matchString>
+													<matchType>exact</matchType>
+												</tag>
+												<tag>
+													<matchString>TODO</matchString>
+													<matchType>exact</matchType>
+												</tag>
+												<tag>
+													<matchString>XXX</matchString>
+													<matchType>exact</matchType>
+												</tag>
+											</tags>
+										</tagClass>
+									</tagClasses>
+								</tagListOptions>
+							</configuration>
+						</plugin>
+
+						<plugin>
+							<groupId>org.codehaus.mojo</groupId>
+							<artifactId>jdepend-maven-plugin</artifactId>
+						</plugin>
+						
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-pmd-plugin</artifactId>
+							<configuration>
+								<targetJdk>1.5</targetJdk>
+								<format>xml</format>
+								<linkXref>true</linkXref>
+								<sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
+								<minimumTokens>100</minimumTokens>
+								<rulesets>
+									<ruleset>/rulesets/basic.xml</ruleset>
+									<ruleset>/rulesets/unusedcode.xml</ruleset>
+								</rulesets>
+								<excludeRoots>
+									<excludeRoot>target/generated-sources</excludeRoot>
+									<excludeRoot>target/jsp-source</excludeRoot>
+								</excludeRoots>
+							</configuration>
+							<reportSets>
+								<reportSet>
+									<reports>
+										<report>pmd</report>
+										<report>cpd</report>
+									</reports>
+								</reportSet>
+							</reportSets>
+						</plugin>
+						
+						<plugin>
+							<groupId>org.codehaus.mojo</groupId>
+							<artifactId>findbugs-maven-plugin</artifactId>
+							<configuration>
+								<effort>Max</effort>
+								<threshold>Low</threshold>
+							</configuration>
+						</plugin>
+
+						<plugin>
+							<groupId>net.sf</groupId>
+							<artifactId>stat-scm</artifactId>
+							<configuration>
+								<skip>${stat-scm.skip}</skip>
+								<excludes>
+									<exclude>**/*.doc</exclude>
+									<exclude>**/*.xls</exclude>
+								</excludes>
+							</configuration>
+						</plugin>
+								
+					</reportPlugins>
+				</configuration>
+			</plugin>
+-->			
+		</plugins>
+
+	</build>
+	
+</project>

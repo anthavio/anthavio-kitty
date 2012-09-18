@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:trx="http://www.springframework.org/schema/tx"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:ctx="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+	<ctx:annotation-config />
+	
+	<ctx:component-scan base-package="com.anthavio.kitty.webmvc" />
+	
+	<mvc:resources mapping="/res/**" location="/res/" />
+	
+	<!-- localeResolver is magic constant -->
+	<alias alias="localeResolver" name="CookieLocaleResolver" />
+	
+	<bean id="CookieLocaleResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver"/>
+	
+	<bean id="SessionLocaleResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver"/>
+	
+	<mvc:annotation-driven conversion-service="FormattingConversionService" validator="ValidatorFactory" />
+	
+	<mvc:interceptors>
+		<bean id="SessionInitInterceptor" class="com.anthavio.kitty.webmvc.SessionInitInterceptor" />
+		<bean id="LocaleChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+			<property name="paramName" value="locale"/>
+		</bean>
+	</mvc:interceptors>
+
+<!--	
+	<bean id="AnnotationMethodHandlerAdapter" class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		<property name="webBindingInitializer">
+			<bean class="org.springframework.web.bind.support.ConfigurableWebBindingInitializer">
+				<property name="validator" ref="ValidatorFactory"/>
+				<property name="conversionService" ref="FormattingConversionService"/>
+			</bean>
+		</property>
+		<property name="cacheSeconds" value="0" />
+	</bean>
+	
+	<bean id="DefaultAnnotationHandlerMapping" class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+		<property name="interceptors">
+			<list>
+				<bean id="LocaleChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+					<property name="paramName" value="locale"/>
+				</bean>
+				<bean id="SessionInitInterceptor" class="com.anthavio.kitty.webmvc.SessionInitInterceptor" />
+			</list>
+		</property>
+	</bean>
+-->
+
+	<bean id="FormattingConversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+		<property name="converters">
+			<list>
+				<bean class="com.anthavio.spring.web.EnumIntConverterFactory"/>
+				<bean class="com.anthavio.spring.web.EnumStrConverterFactory"/>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="ValidatorFactory" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+		<!-- pokud neni pouzito, pak zabere standardni javax.validation ValidationMessages.properties mechanismus -->
+		<!-- Dalsi info https://jira.springsource.org/browse/SPR-6730 https://jira.springsource.org/browse/SPR-7307-->
+		<property name="validationMessageSource" ref="messageSource"/>
+	</bean>
+	
+	<bean id="TilesConfigurer" class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
+		<property name="definitions">
+			<list>
+				<value>/WEB-INF/tiles.xml</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="JstlViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+		<property name="exposeContextBeansAsAttributes" value="true"/>
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
+		<property name="order" value="1"/>
+	</bean>
+
+	<bean id="ThymeleafViewResolver" class="org.thymeleaf.spring3.view.ThymeleafViewResolver">
+		<property name="templateEngine" ref="ThymeleafTemplateEngine" />
+		<property name="cache" value="false"/>
+		<property name="order" value="2" />
+		<!--
+		<property name="viewNames" value="*.html,*.xhtml" />
+		-->
+	</bean>
+
+	<bean id="ThymeleafTemplateResolver" class="org.thymeleaf.templateresolver.ServletContextTemplateResolver">
+		<property name="prefix" value="/WEB-INF/thymeleaf/" />
+		<property name="suffix" value=".html" />
+		<property name="templateMode" value="XHTML" />
+		<property name="characterEncoding" value="utf-8"/>
+		<property name="cacheable" value="false"/>
+	</bean>
+
+	<bean id="ThymeleafTemplateEngine" class="org.thymeleaf.spring3.SpringTemplateEngine">
+		<property name="templateResolver" ref="ThymeleafTemplateResolver" />
+	</bean>
+
+	<!--
+	<bean name="main" class="org.thymeleaf.spring3.view.ThymeleafView">
+		<property name="staticVariables">
+			<map>
+				<entry key="footer" value="Some company: &lt;b&gt;ACME&lt;/b&gt;" />
+			</map>
+		</property>
+	</bean>
+	-->
+</beans>

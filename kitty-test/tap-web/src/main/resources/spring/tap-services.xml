@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:trx="http://www.springframework.org/schema/tx"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:ctx="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<import resource="classpath:spring/tap-security.xml"/>
+
+	<ctx:component-scan base-package="com.anthavio.tap.svc"/>
+	
+	<bean id="TapMessagesBinder" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+		<property name="schema" value="schema/PingMessages.xsd"/>
+		<property name="contextPath" value="com.anthavio.example.messages"/>
+		<property name="marshallerProperties" ref="JaxbMarshallerProperties"/>
+	</bean>
+
+</beans>

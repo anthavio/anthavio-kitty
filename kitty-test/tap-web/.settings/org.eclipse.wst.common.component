@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="tap-web">
+        <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/target/generated-sources/jaxb"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/target/generated-sources/querydsl"/>
+        <dependent-module archiveName="komix-spring-1.1.3-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/komix-spring/komix-spring">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="komix-xml-1.0.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/komix-xml/komix-xml">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="komix-dao-1.1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/komix-dao/komix-dao">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="komix-common-1.1.3-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/komix-common/komix-common">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <property name="context-root" value="tap-web"/>
+        <property name="java-output-path" value="/tap-web/target/classes"/>
+    </wb-module>
+</project-modules>

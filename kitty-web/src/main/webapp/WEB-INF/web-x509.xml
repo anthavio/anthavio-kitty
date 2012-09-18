@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:ctx="http://www.springframework.org/schema/context"
+	xmlns:sec="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+
+	<bean id="FilterSecurityInterceptor" class="org.springframework.security.web.access.intercept.FilterSecurityInterceptor">
+		<property name="authenticationManager" ref="AuthenticationManager"/>
+		<property name="accessDecisionManager" ref="WebAccessDecisionManager"/>
+		<property name="messageSource" ref="messageSource"/>
+		
+		<property name="securityMetadataSource">
+			<sec:filter-security-metadata-source request-matcher="ant" use-expressions="false">
+				<sec:intercept-url pattern="/" access="ROLE_ANONYMOUS,ROLE_AUTHENTICATED" />
+				<sec:intercept-url pattern="/ui/welcome*" access="ROLE_ANONYMOUS,ROLE_AUTHENTICATED" />
+				<sec:intercept-url pattern="/ui/login*" access="ROLE_ANONYMOUS,ROLE_AUTHENTICATED" />
+				<sec:intercept-url pattern="/ui/j_spring_security_check" access="ROLE_ANONYMOUS,ROLE_AUTHENTICATED" />
+				<sec:intercept-url pattern="/ui/denied.htm" access="ROLE_ANONYMOUS,ROLE_AUTHENTICATED" />
+				<sec:intercept-url pattern="/**" access="ROLE_AUTHENTICATED" />
+			</sec:filter-security-metadata-source>
+		</property>
+	</bean>
+<!--
+	<bean id="AuthenticationManager" class="org.springframework.security.authentication.ProviderManager">
+		<property name="providers">
+			<list>
+				<ref local="PreAuthenticatedAuthenticationProvider"/>
+			</list>
+		</property>
+	</bean>
+
+	<sec:user-service id="KittyUserDetailsService">
+		<sec:user name="localhost" password="" authorities="ROLE_USER"/>
+		<sec:user name="admin" password="kokosak" authorities="ROLE_USER" />
+	</sec:user-service>
+-->
+
+	<bean id="AuthenticationManager" class="org.springframework.security.authentication.ProviderManager">
+		<property name="providers">
+			<bean class="com.anthavio.spring.security.DummyAuthenticationProvider">
+				<property name="roles">
+					<list>
+						<value>ROLE_USER</value>
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="WebAccessDecisionManager" class="org.springframework.security.access.vote.AffirmativeBased">
+		<property name="allowIfAllAbstainDecisions" value="false"/>
+		<property name="decisionVoters">
+			<list>
+				<bean id="RoleHierarchyVoter" class="org.springframework.security.access.vote.RoleHierarchyVoter">
+					<constructor-arg ref="KittyRoleHierarchy"/>
+					<property name="rolePrefix" value="ROLE_"/>
+				</bean>
+				<bean id="WebExpressionVoter" class="org.springframework.security.web.access.expression.WebExpressionVoter">
+					<property name="expressionHandler" ref="WebExpressionHandler" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="WebExpressionHandler" class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler">
+		<property name="roleHierarchy" ref="KittyRoleHierarchy" />
+	</bean>
+	
+	<bean id="KittyRoleHierarchy" class="org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl">
+		<property name="hierarchy">
+			<value>
+				ROLE_ADMIN > ROLE_USER
+				ROLE_USER > ROLE_AUTHENTICATED
+			</value>
+		</property>
+	</bean>
+	
+	<!-- x509 -->
+	
+	<bean id="SpringSecurityFilterChain" class="org.springframework.security.web.FilterChainProxy">
+		<sec:filter-chain-map request-matcher="ant">
+			<sec:filter-chain pattern="/res/**" filters="none"/>
+			<sec:filter-chain pattern="/ui/**" filters="
+				SecurityContextPersistenceFilter,
+				X509AuthenticationFilter,
+				Http403ExceptionTranslationFilter,
+				FilterSecurityInterceptor"
+			/>
+		</sec:filter-chain-map>
+	</bean>
+	
+	<bean id="SecurityContextPersistenceFilter" class="org.springframework.security.web.context.SecurityContextPersistenceFilter">
+		<property name="securityContextRepository">
+			<bean class="org.springframework.security.web.context.HttpSessionSecurityContextRepository">
+				<property name="allowSessionCreation" value="true" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="Http403ExceptionTranslationFilter" class="org.springframework.security.web.access.ExceptionTranslationFilter">
+		<property name="authenticationEntryPoint">
+			<bean class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint" />
+		</property>
+	</bean>
+
+	<bean id="X509AuthenticationFilter" class="org.springframework.security.web.authentication.preauth.x509.X509AuthenticationFilter">
+		<property name="authenticationManager" ref="AuthenticationManager"/>
+		<property name="principalExtractor">
+			<bean class="org.springframework.security.web.authentication.preauth.x509.SubjectDnX509PrincipalExtractor">
+				<property name="subjectDnRegex" value="CN=([^,]+)"/>
+			</bean>
+		</property>
+	</bean>
+<!--	
+	<bean id="PreAuthenticatedAuthenticationProvider" class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
+		<property name="preAuthenticatedUserDetailsService">
+			<bean class="org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper">
+				<property name="userDetailsService" ref="KittyUserDetailsService"/>
+			</bean>
+		</property>
+	</bean>
+-->
+</beans>

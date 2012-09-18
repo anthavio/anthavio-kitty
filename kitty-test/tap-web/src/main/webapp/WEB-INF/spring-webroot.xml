@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:ctx="http://www.springframework.org/schema/context"
+	xmlns:sec="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="file:${tap.ext.dir}/tap-boot.properties"/>
+		<property name="fileEncoding" value="UTF-8"/>
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+		<property name="searchSystemEnvironment" value="true"/>
+	</bean>
+	
+	<!-- 
+		http://static.springsource.org/spring-security/site/docs/3.0.x/reference/security-filter-chain.html
+		http://static.springsource.org/spring-security/site/docs/3.0.x/reference/ns-config.html#filter-stack 
+	-->
+	<bean id="SpringSecurityFilterChain" class="org.springframework.security.web.FilterChainProxy">
+		<sec:filter-chain-map path-type="ant">
+			<sec:filter-chain pattern="/ws/**" filters="
+				WsSecurityContextPersistenceFilter,
+				X509AuthenticationFilter,
+				FilterSecurityInterceptor" />
+			<!--
+			<sec:filter-chain pattern="/**" filters="none"/>
+			-->
+			<sec:filter-chain pattern="/res/**" filters="none"/>
+			
+			<sec:filter-chain pattern="/ui/**" filters="
+					SecurityContextPersistenceFilter,
+					LogoutFilter,
+					FormLoginFilter,
+					AnonymousAuthenticationFilter,
+					FormExceptionTranslationFilter,
+					FilterSecurityInterceptor" />
+			
+			<!--
+			<sec:filter-chain pattern="/ui/denied.htm" filters="none"/>
+			-->
+			<!--
+			<sec:filter-chain pattern="/ui/**" filters="
+					SecurityContextPersistenceFilter,
+					LogoutFilter,
+					NtlmExceptionTranslationFilter,
+					NtlmFilter,
+					FilterSecurityInterceptor" />
+			-->
+		</sec:filter-chain-map>
+		
+	</bean>
+
+	<!-- http://static.springsource.org/spring-security/site/docs/3.0.x/reference/core-web-filters.html -->
+	<bean id="FilterSecurityInterceptor" class="org.springframework.security.web.access.intercept.FilterSecurityInterceptor">
+		<property name="authenticationManager" ref="AuthenticationManager"/>
+		<property name="accessDecisionManager" ref="WebAccessDecisionManager"/>
+		<property name="messageSource" ref="messageSource"/>
+		
+		<property name="securityMetadataSource">
+			<sec:filter-security-metadata-source path-type="ant" use-expressions="false">
+				<sec:intercept-url pattern="/" access="ROLE_ANONYMOUS,ROLE_AUTHENTICATED" />
+				<sec:intercept-url pattern="/ui/welcome*" access="ROLE_ANONYMOUS,ROLE_AUTHENTICATED" />
+				<sec:intercept-url pattern="/ui/login*" access="ROLE_ANONYMOUS,ROLE_AUTHENTICATED" />
+				<sec:intercept-url pattern="/ui/j_spring_security_check" access="ROLE_ANONYMOUS,ROLE_AUTHENTICATED" />
+				<sec:intercept-url pattern="/ui/denied.htm" access="ROLE_ANONYMOUS,ROLE_AUTHENTICATED" />
+				<sec:intercept-url pattern="/**" access="ROLE_AUTHENTICATED" />
+			</sec:filter-security-metadata-source>
+		</property>
+	</bean>
+	
+	<bean id="FormExceptionTranslationFilter" class="org.springframework.security.web.access.ExceptionTranslationFilter">
+		<property name="authenticationEntryPoint">
+			<bean id="FormAuthenticationEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+				<property name="loginFormUrl" value="/ui/login.htm"/>
+			</bean>
+		</property>
+		<property name="accessDeniedHandler" ref="AccessDeniedHandler"/>
+	</bean>
+
+	<bean id="AccessDeniedHandler" class="org.springframework.security.web.access.AccessDeniedHandlerImpl">
+		<property name="errorPage" value="/ui/denied.htm"/>
+	</bean>
+
+	<!--
+	<bean id="SessionManagementFilter" class="org.springframework.security.web.session.SessionManagementFilter">
+		<property name="authenticationFailureHandler">
+			<bean class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+				<property name="defaultFailureUrl" value="/ui/login.htm?login_error=1"/>
+			</bean>
+		</property>
+	</bean>
+	-->
+	
+	<bean id="SecurityContextPersistenceFilter" class="org.springframework.security.web.context.SecurityContextPersistenceFilter">
+		<property name="securityContextRepository">
+			<bean class="org.springframework.security.web.context.HttpSessionSecurityContextRepository">
+				<property name="allowSessionCreation" value="true" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="NtlmFilter" class="org.springframework.security.ui.ntlm.NtlmAuthenticationFilter">  
+		<property name="retryOnAuthFailure" value="false" />
+		<property name="stripDomain" value="true"/>
+		<property name="defaultDomain" value="${jcifs.smb.client.domain}"/>
+		<property name="netbiosWINS" value="${jcifs.netbios.wins}"/>
+		<property name="authenticationManager" ref="AuthenticationManager"/>
+	<!--
+		<property name="loadJcifsGroups" value="true"/>
+		<property name="authenticationManager">
+			<bean id="AuthenticationManager" class="org.springframework.security.authentication.ProviderManager">
+				<property name="providers">
+					<bean class="com.anthavio.spring.security.DummyAuthenticationProvider">
+						<property name="roles">
+							<list>
+								<value>ROLE_USER</value>
+							</list>
+						</property>
+					</bean>
+				</property>
+			</bean>
+		</property>
+	-->		
+	</bean>
+	
+	<bean id="AuthenticationManager" class="org.springframework.security.authentication.ProviderManager">
+		<property name="providers">
+			<ref bean="LdapAuthProvider"/>
+		</property>
+	</bean>
+	
+	<bean id="NullRequestCacheAwareFilter" class="org.springframework.security.web.savedrequest.NullRequestCache"/>
+	
+	<bean id="NtlmEntryPoint" class="org.springframework.security.ui.ntlm.NtlmAuthenticationFilterEntryPoint">
+		<property name="authenticationFailureUrl" value="/ui/denied.htm"/>
+	</bean>
+	
+	<bean id="NtlmExceptionTranslationFilter" class="org.springframework.security.web.access.ExceptionTranslationFilter">
+		<property name="authenticationEntryPoint" ref="NtlmEntryPoint"/>
+	</bean>
+	
+	<bean id="FormLoginFilter" class="org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter">
+		<property name="authenticationManager" ref="AuthenticationManager"/>
+		<property name="filterProcessesUrl" value="/ui/j_spring_security_check"/>
+		<property name="authenticationSuccessHandler">
+			<bean class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
+				<property name="defaultTargetUrl" value="/ui/home.htm"/>
+			</bean>
+		</property>
+		<property name="authenticationFailureHandler">
+			<bean class="com.anthavio.spring.security.ExceptionMappingAuthenticationFailureHandler">
+				<property name="defaultFailureUrl" value="/ui/login.htm?authfailed=true"/>
+				<property name="exceptionMappings">
+					<map>
+						<entry key="org.springframework.security.core.userdetails.UsernameNotFoundException" value="/ui/login.htm?errusername=true"/>
+						<entry key="org.springframework.security.authentication.BadCredentialsException" value="/ui/login.htm?errpassword=true"/>
+						<entry key="org.springframework.security.authentication.CredentialsExpiredException" value="/ui/login.htm?newpassword=true"/>
+						<entry key="org.springframework.security.authentication.LockedException" value="/ui/login.htm?acclocked=true"/>
+						<entry key="org.springframework.security.authentication.DisabledException" value="/ui/login.htm?accdisabled=true"/>
+					</map>
+				</property>
+			</bean>
+		</property>
+		<property name="sessionAuthenticationStrategy">
+			<bean class="org.springframework.security.web.authentication.session.ConcurrentSessionControlStrategy">
+				<constructor-arg ref="SessionRegistry"/>
+				<property name="maximumSessions" value="1"/>
+				<property name="exceptionIfMaximumExceeded" value="true"/>
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="SessionRegistry" class="org.springframework.security.core.session.SessionRegistryImpl"/>
+	
+	<bean id="LogoutFilter" class="org.springframework.security.web.authentication.logout.LogoutFilter">
+		<constructor-arg name="logoutSuccessHandler" ref="LogoutSuccessHandler"/>
+		<constructor-arg name="handlers">
+			<array>
+				<bean class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler">
+					<property name="invalidateHttpSession" value="true"/>
+				</bean>
+			</array>
+		</constructor-arg>
+		<property name="filterProcessesUrl" value="/ui/logout"/>
+	</bean>
+	
+	<bean id="LogoutSuccessHandler" class="org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler">
+		<!--
+		<property name="defaultTargetUrl" value="/ui/login.htm?loggedout=true"/>
+		-->
+		<property name="defaultTargetUrl" value="/ui/welcome.htm"/>
+	</bean>
+	
+	<bean class="com.anthavio.spring.security.AuthenticationListener">
+		<property name="logInteractiveAuthenticationSuccessEvents" value="false"/>
+	</bean>
+    
+	<bean class="com.anthavio.spring.security.AuthorizationListener"/>
+
+	<!-- 12. Anonymous Authentication http://static.springsource.org/spring-security/site/docs/3.0.x/reference/anonymous.html -->
+	
+	<bean id="AnonymousAuthenticationFilter" class="org.springframework.security.web.authentication.AnonymousAuthenticationFilter">
+		<property name="key" value="ana-example"/>
+		<property name="userAttribute" value="anonymous,ROLE_ANONYMOUS"/>
+	</bean>
+	
+	<!-- WebSvc -->
+	
+	<bean id="WsSecurityContextPersistenceFilter" class="org.springframework.security.web.context.SecurityContextPersistenceFilter">
+		<property name="securityContextRepository">
+			<bean class="org.springframework.security.web.context.HttpSessionSecurityContextRepository">
+				<property name="allowSessionCreation" value="false" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="X509AuthenticationFilter" class="org.springframework.security.web.authentication.preauth.x509.X509AuthenticationFilter">
+		<property name="authenticationManager" ref="AuthenticationManager"/>
+	</bean>
+	
+	<bean id="BasicAuthenticationFilter" class="org.springframework.security.web.authentication.www.BasicAuthenticationFilter">
+		<property name="authenticationManager" ref="AuthenticationManager"/>
+		<property name="authenticationEntryPoint">
+			<bean class="org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint">
+				<property name="realmName" value="ExampleRealm"/>
+			</bean>
+		</property>
+	</bean>
+
+	<!-- common -->
+
+	<bean id="WebAccessDecisionManager" class="org.springframework.security.access.vote.AffirmativeBased">
+		<property name="allowIfAllAbstainDecisions" value="false"/>
+		<property name="decisionVoters">
+			<list>
+				<bean id="RoleHierarchyVoter" class="org.springframework.security.access.vote.RoleHierarchyVoter">
+					<constructor-arg ref="ExampleRoleHierarchy"/>
+					<property name="rolePrefix" value="ROLE_"/>
+				</bean>
+				<bean id="WebPreInvocationAuthorizationAdviceVoter" class="org.springframework.security.web.access.expression.WebExpressionVoter">
+					<property name="expressionHandler" ref="WebExpressionHandler" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="WebExpressionHandler" class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler">
+		<property name="roleHierarchy" ref="ExampleRoleHierarchy" />
+	</bean>	
+
+</beans>

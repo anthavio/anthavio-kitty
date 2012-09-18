@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:ctx="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- @Component,@Autowired,... -->
+	<ctx:annotation-config />
+	
+	<!-- Annotations scan -->
+	<ctx:component-scan base-package="com.anthavio.tap.wsvc" />
+	<!-- AspectJ weaving
+	<ctx:load-time-weaver aspectj-weaving="on" />
+	 -->
+
+	<bean id="PayloadRootAnnotationMethodEndpointMapping" class="org.springframework.ws.server.endpoint.mapping.PayloadRootAnnotationMethodEndpointMapping">
+		<property name="interceptors">
+			<list>
+				<ref bean="loggingInterceptor" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="TapEndpointAdapter" class="org.springframework.ws.server.endpoint.adapter.GenericMarshallingMethodEndpointAdapter">
+		<constructor-arg ref="TapMessagesBinder" />
+	</bean>
+		
+	<bean id="loggingInterceptor" class="org.springframework.ws.server.endpoint.interceptor.PayloadLoggingInterceptor" />
+	
+	<bean class="org.springframework.ws.soap.server.endpoint.SimpleSoapExceptionResolver">
+		<property name="warnLogCategory" value="WsEndpoint"/>
+	</bean>
+
+</beans>

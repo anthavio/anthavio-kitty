@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns="http://www.komix.com/schema/kitty" targetNamespace="http://www.komix.com/schema/kitty"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+
+	<xsd:element name="kitty">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="persistence" type="persistence"
+					minOccurs="0" />
+			</xsd:sequence>
+			<xsd:attribute name="id" type="xsd:string" use="optional">
+			</xsd:attribute>
+			<xsd:attribute name="scenario-class" type="xsd:string"
+				use="required">
+			</xsd:attribute>
+			<xsd:attribute name="options-class" type="xsd:string"
+				use="optional">
+			</xsd:attribute>
+			<xsd:attribute name="executor" type="xsd:string" use="optional">
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:complexType name="persistence">
+		<xsd:choice>
+			<xsd:element name="data-source">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="driverClassName" type="xsd:string" />
+						<xsd:element name="url" type="xsd:string" />
+						<xsd:element name="username" type="xsd:string" />
+						<xsd:element name="password" type="xsd:string" />
+						<xsd:element name="maxActive" type="xsd:int" minOccurs="0"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="data-source-ref">
+				<xsd:complexType>
+					<xsd:attribute name="name" use="required"/>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="embedded-h2">
+				<xsd:complexType>
+					<xsd:attribute name="tcpPort" type="xsd:int" use="optional"></xsd:attribute>
+					<xsd:attribute name="baseDir" type="xsd:string" use="optional"></xsd:attribute>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:choice>
+		<xsd:attribute name="init-script" use="optional"/>
+	</xsd:complexType>
+	
+</xsd:schema>

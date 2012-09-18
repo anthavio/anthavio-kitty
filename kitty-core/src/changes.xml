@@ -1,0 +1,134 @@
+<document xmlns="http://maven.apache.org/changes/1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/xsd/changes-1.0.0.xsd">
+
+	<!-- http://maven.apache.org/plugins/maven-changes-plugin/changes.html
+-->
+
+	<properties>
+		<title>komix-test-tool changes</title>
+		<author email="vanek@komix.com">Martin Vaněk</author>
+	</properties>
+	
+	<body>
+	
+		<release version="1.5.1" date="">
+			<action dev="vanek" type="update">
+				jetty 7.1.x -> 7.3.x
+			</action>
+			<action dev="vanek" type="update">
+				JUnit nahrazen TestNG
+			</action>
+			<action dev="vanek" type="update">
+				selenium 2.0a5 -> 2.0b2
+			</action>
+		</release>
+		
+		<release version="1.5.0" date="9.9.2010">
+			<action dev="vanek" type="add">
+				com.anthavio.tomcat
+			</action>
+			<action dev="vanek" type="add">
+				Abstrakce ServerBuilder, ToolBuilder, ScenarioBuilder
+			</action>
+		</release>
+	
+		<release version="1.1.0" date="13.8.2010">
+			<action dev="vanek" type="update">
+				masivni predelavky
+			</action>
+			<action dev="vanek" type="update">
+				java 5 -> java 6
+			</action>
+			<action dev="vanek" type="update">
+				com.anthavio.testtool -> com.anthavio.test.tool
+			</action>
+			<action dev="vanek" type="update">
+				komix-aspects 1.2.1 -> komix-aspects 1.2.2
+			</action>
+		</release>
+	
+		<release version="1.0.14" date="10.8.2010">
+			<action dev="vanek" type="update">
+				komix-spring 1.0.5 a komix-common 1.0.0
+			</action>
+			<action dev="vanek" type="update">
+				webdriver 0.9.7376 -> selenium 2.0a5
+			</action>
+			<action dev="vanek" type="add">
+				Pridana abstrakce spousteni scenaru ScenarioBuilder a ScenarioExecutor
+			</action>
+		</release>
+	
+		<release version="1.0.12" date="22.7.2010">
+			<action dev="vanek" type="update">
+				komix-aspects 1.2.1 => aspectj 1.6.9
+      </action>
+      <action dev="vanek" type="update">
+				komix-parent 1.0.6
+      </action>
+      <action dev="vanek" type="update">
+				komix-spring 1.0.4
+      </action>
+    </release>
+	
+		<release version="1.0.9" date="29.6.2010">
+			<action dev="vanek" type="update">
+				presun z testovaci do projektove svn repository
+      </action>
+      <action dev="vanek" type="update">
+				upgrade komix-aspects na 1.1.2
+      </action>
+      <action dev="vanek" type="update">
+				upgrade komix-spring na 1.0.3
+      </action>
+      <action dev="vanek" type="update">
+				upgrade komix-parent na 1.0.5
+      </action>
+			<action dev="vanek" type="add">
+				konfigurace z vice jetty xml souboru
+			</action>
+			<action dev="vanek" type="update">
+				verze slf4j a logback uz se nedeni z komix-parent
+			</action>
+			<action dev="vanek" type="add">
+				pristehovani com.anthavio.jetty z projektu komix-spring
+			</action>
+			<action dev="vanek" type="update">
+				jetty 6.1.x -> 7.1.4
+			</action>
+			<action dev="vanek" type="fix">
+				ContextBuilder polykal vyjimky pro startovani/stopovani jettyho
+			</action>
+			<action dev="vanek" type="update">
+				spring 3.0.3
+			</action>
+		</release>
+	
+		<release version="1.0.8" date="9.6.2010">
+			<action dev="vanek" type="update">komix-parent 1.0.4</action>
+			<action dev="vanek" type="update">komix-spring 1.0.2</action>
+			<action dev="vanek" type="update">komix-aspects 1.0.5</action>
+		</release>
+		
+		<release version="1.0.7" date="25.5.2010" description="release 1.0.7">
+			<action dev="vanek" type="update">upgrade testng na 5.12.1</action>
+			<action dev="vanek" type="update">upgrade komix-parent</action>
+		</release>
+		
+		<release version="1.0.5" date="19.4.2010" description="release 1.0.5">
+			<action dev="peremsky" type="fix">
+				Cislovani stepu nemusi byt kontinualni rada cisel.
+				Stepy se nyni do logu vypisuji i s atribytem 'i' z xml
+				tedy napr. SelectFormStep[i=57]
+		    </action>
+		</release>
+
+		<release version="1.0.4" date="19.4.2010" description="release 1.0.4">
+			<action dev="peremsky" type="fix">
+				Stepy scenare jsou nyni s podporou cislovani (jako xml atribut i="...")
+		   </action>
+		</release>
+		
+	</body>
+</document>

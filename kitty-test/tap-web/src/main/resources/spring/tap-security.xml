@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:trx="http://www.springframework.org/schema/tx"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:sec="http://www.springframework.org/schema/security"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:ctx="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+	
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="file:${tap.ext.dir}/tap-boot.properties"/>
+		<property name="fileEncoding" value="UTF-8"/>
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+		<property name="searchSystemEnvironment" value="true"/>
+	</bean>
+	
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basename" value="classpath:example-messages" />
+		<property name="fallbackToSystemLocale" value="false" />
+		<property name="defaultEncoding" value="UTF-8"/>
+		<property name="cacheSeconds" value="1"/>
+	</bean>
+
+	<!-- GlobalMethodSecurityBeanDefinitionParser -->
+	<sec:global-method-security access-decision-manager-ref="AccessDecisionManager" 
+		secured-annotations="enabled" jsr250-annotations="enabled" pre-post-annotations="enabled">
+		<sec:expression-handler ref="MethodExpressionHandler"/>
+		<!--
+		<sec:pre-post-annotation-handling>
+			<sec:invocation-attribute-factory ref=""/>
+		</sec:pre-post-annotation-handling>
+		-->
+	</sec:global-method-security>
+	
+	<bean id="MethodExpressionHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler"/>
+<!--
+	<bean id="AuthenticationManager" class="org.springframework.security.authentication.ProviderManager">
+		<property name="providers">
+			<list>
+				<ref local="DaoAuthenticationProvider"/>
+				<ref local="AnonymousAuthenticationProvider"/>
+				<ref local="PreAuthenticatedAuthenticationProvider"/>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="DaoAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+		<property name="userDetailsService" ref="NkcUserDetailsService"/>
+		<property name="hideUserNotFoundExceptions" value="false"/>
+		<property name="messageSource" ref="messageSource"/>
+	</bean>
+-->
+<!--
+	<bean id="UserCache" class="org.springframework.security.core.userdetails.cache.EhCacheBasedUserCache">
+		<property name="cache" ref="EhCacheFactoryBean"/>
+	</bean>
+	
+	<bean id="EhCacheFactoryBean" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+		<property name="cacheName" value="NkcCache"/>
+		<property name="cacheManager">
+			<bean class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+				<property name="configLocation" value="classpath:/ehcache-failsafe.xml"/>
+			</bean>
+		</property>
+	</bean>
+-->
+	<bean id="AnonymousAuthenticationProvider" class="org.springframework.security.authentication.AnonymousAuthenticationProvider">
+		<property name="key" value="ana-example"/>
+	</bean>
+<!--
+	<bean id="PreAuthenticatedAuthenticationProvider" class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
+		<property name="preAuthenticatedUserDetailsService">
+			<bean class="org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper">
+				<property name="userDetailsService" ref="NkcUserDetailsService"/>
+			</bean>
+		</property>
+	</bean>
+-->
+	<bean id="AccessDecisionManager" class="com.anthavio.spring.security.AccessDecisionManager">
+		<property name="allowIfAllAbstainDecisions" value="false"/>
+		<property name="decisionVoters">
+			<list>
+				<bean id="JavaxRoleVoter" class="org.springframework.security.access.annotation.Jsr250Voter"/>
+				<bean id="RoleHierarchyVoter" class="org.springframework.security.access.vote.RoleHierarchyVoter">
+					<constructor-arg ref="ExampleRoleHierarchy"/>
+					<property name="rolePrefix" value="ROLE_"/>
+				</bean>
+				<bean id="RoleVoter" class="org.springframework.security.access.vote.RoleVoter">
+					<property name="rolePrefix" value="ROLE_"/>
+				</bean>
+				<bean id="AuthenticatedVoter" class="org.springframework.security.access.vote.AuthenticatedVoter"/>
+				<bean id="MethodPreInvocationAuthorizationAdviceVoter" class="org.springframework.security.access.prepost.PreInvocationAuthorizationAdviceVoter">
+					<constructor-arg>
+						<bean class="org.springframework.security.access.expression.method.ExpressionBasedPreInvocationAdvice">
+							<property name="expressionHandler" ref="MethodExpressionHandler"/>
+						</bean>
+					</constructor-arg>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="LdapAuthProvider" class="org.springframework.security.ldap.authentication.LdapAuthenticationProvider">
+		<constructor-arg>
+			<bean class="org.springframework.security.ui.ntlm.ldap.authenticator.NtlmAwareLdapAuthenticator">
+				<constructor-arg ref="LdapContextSource"/>
+				<property name="userSearch">  
+					<bean id="LdapUserSearch" class="org.springframework.security.ldap.search.FilterBasedLdapUserSearch">  
+						<constructor-arg index="0" value="${ldap.search.base}"/>  
+						<constructor-arg index="1" value="${ldap.search.user.filter}"/>  
+						<constructor-arg index="2" ref="LdapContextSource" />
+					</bean>                 
+				</property>  
+			</bean>
+		</constructor-arg>
+		<constructor-arg>
+			<bean class="org.springframework.security.ldap.userdetails.DefaultLdapAuthoritiesPopulator">  
+				<constructor-arg ref="LdapContextSource" />  
+				<constructor-arg value="${ldap.search.base}" />
+				<property name="groupSearchFilter" value="${ldap.search.role.filter}"/>
+				<property name="searchSubtree" value="true"/>
+				<property name="defaultRole" value="ROLE_USER"/>  
+				<property name="rolePrefix" value="ROLE_"/>  
+				<property name="convertToUpperCase" value="true"/>  
+			</bean>  
+		</constructor-arg>
+		<!--
+		<property name="userDetailsContextMapper">
+			<bean class="com.anthavio.nkc.services.user.NkcUserDetailsContextMapper"/>
+		</property>
+		-->
+	</bean>
+	
+	<bean id="LdapContextSource" class="org.springframework.security.ldap.DefaultSpringSecurityContextSource">
+		<constructor-arg value="${ldap.bind.url}"/>
+		<!--
+		<property name="anonymousReadOnly" value="true"/>
+		<property name="referral" value="follow"/>
+		<property name="userDn" value="${jcifs.smb.client.domain}\${ldap.bind.userDn}"/>
+		-->		
+		<property name="userDn" value="${ldap.bind.userDn}"/>
+		<property name="password" value="${ldap.bind.password}"/>
+
+	</bean>
+	
+	<bean id="ExampleRoleHierarchy" class="org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl">
+		<property name="hierarchy">
+			<value>
+				ROLE_ADMIN > ROLE_USER
+				ROLE_USER > ROLE_AUTHENTICATED
+			</value>
+		</property>
+	</bean>
+<!--
+	<bean id="NkcUserDetailsService" class="com.anthavio.nkc.services.user.NkcUserDetailsService">
+		<property name="userDetailsService" ref="TestUserDetailsService"/>
+	</bean>
+
+	<sec:user-service id="TestUserDetailsService">
+		<sec:user name="av" password="kokosak" authorities="ROLE_AFIS_VEDOUCI"/>
+		<sec:user name="ag" password="kokosak" authorities="ROLE_AFIS_GESTOR"/>
+		<sec:user name="cv" password="kokosak" authorities="ROLE_CODIS_VEDOUCI"/>
+		<sec:user name="cg" password="kokosak" authorities="ROLE_CODIS_GESTOR" />
+		<sec:user name="re" password="kokosak" authorities="ROLE_REPORTER" />
+		<sec:user name="ad" password="kokosak" authorities="ROLE_ADMIN" />
+		<sec:user name="zx" password="kokosak" authorities="ROLE_AFIS_VEDOUCI, ROLE_AFIS_GESTOR, ROLE_CODIS_VEDOUCI, ROLE_CODIS_GESTOR, ROLE_REPORTER, ROLE_ADMIN" />
+	</sec:user-service>
+-->
+</beans>

@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- Note:  A "Server" is not itself a "Container", so you may not
+     define subcomponents such as "Valves" at this level.
+     Documentation at /docs/config/server.html
+ -->
+<Server port="8005" shutdown="SHUTDOWN">
+
+  <!--APR library loader. Documentation at /docs/apr.html
+  <Listener className="org.apache.catalina.core.AprLifecycleListener" SSLEngine="on" />
+  -->
+  <!--Initialize Jasper prior to webapps are loaded. Documentation at /docs/jasper-howto.html -->
+  <Listener className="org.apache.catalina.core.JasperListener" />
+  <!-- Prevent memory leaks due to use of particular java/javax APIs-->
+  <Listener className="org.apache.catalina.core.JreMemoryLeakPreventionListener" />
+  <Listener className="org.apache.catalina.mbeans.GlobalResourcesLifecycleListener" />
+
+  <!-- Global JNDI resources Documentation at /docs/jndi-resources-howto.html -->
+  <GlobalNamingResources>
+    <!-- Editable user database that can also be used by
+         UserDatabaseRealm to authenticate users
+    -->
+    <Resource name="UserDatabase" auth="Container"
+              type="org.apache.catalina.UserDatabase"
+              description="User database that can be updated and saved"
+              factory="org.apache.catalina.users.MemoryUserDatabaseFactory"
+              pathname="conf/tomcat-users.xml" />
+  </GlobalNamingResources>
+
+  <!-- A "Service" is a collection of one or more "Connectors" that share
+       a single "Container" Note:  A "Service" is not itself a "Container", 
+       so you may not define subcomponents such as "Valves" at this level.
+       Documentation at /docs/config/service.html
+   -->
+  <Service name="Catalina">
+  
+    <Executor name="TomcatThreadPool" namePrefix="http-" minSpareThreads="2" maxThreads="150" />
+    
+    <Connector port="5959" protocol="HTTP/1.1" executor="TomcatThreadPool"
+               connectionTimeout="20000" />
+
+    <Connector port="6969" protocol="HTTP/1.1" executor="TomcatThreadPool" 
+               SSLEnabled="true" scheme="https" secure="true"
+               keystoreFile="./conf/localhost.jks" keystorePass="kokosak" 
+               truststoreFile="./conf/localhost.jks" truststorePass="kokosak"
+               clientAuth="false" sslProtocol="TLS"/>
+
+    <Connector port="7979" protocol="HTTP/1.1" executor="TomcatThreadPool" 
+               SSLEnabled="true" scheme="https" secure="true"
+               keystoreFile="./conf/localhost.jks" keystorePass="kokosak" 
+               truststoreFile="./conf/localhost.jks" truststorePass="kokosak"
+               clientAuth="true" sslProtocol="TLS" />
+
+    <!-- An Engine represents the entry point (within Catalina) that processes
+         every request.  The Engine implementation for Tomcat stand alone
+         analyzes the HTTP headers included with the request, and passes them
+         on to the appropriate Host (virtual host).
+         Documentation at /docs/config/engine.html -->
+
+    <!-- You should set jvmRoute to support load-balancing via AJP ie :
+    <Engine name="Catalina" defaultHost="localhost" jvmRoute="jvm1">         
+    --> 
+    <Engine name="Catalina" defaultHost="localhost">
+      <!--For clustering, please take a look at documentation at:
+          /docs/cluster-howto.html  (simple how to)
+          /docs/config/cluster.html (reference documentation) -->
+      <!--
+      <Cluster className="org.apache.catalina.ha.tcp.SimpleTcpCluster"/>
+      -->        
+
+      <!-- Use the LockOutRealm to prevent attempts to guess user passwords
+           via a brute-force attack -->
+      <Realm className="org.apache.catalina.realm.LockOutRealm">
+        <!-- This Realm uses the UserDatabase configured in the global JNDI
+             resources under the key "UserDatabase".  Any edits
+             that are performed against this UserDatabase are immediately
+             available for use by the Realm.  -->
+        <Realm className="org.apache.catalina.realm.UserDatabaseRealm"
+               resourceName="UserDatabase"/>
+      </Realm>
+
+      <!-- Define the default virtual host
+           Note: XML Schema validation will not work with Xerces 2.2.
+       -->
+      <Host name="localhost"  appBase="webapps" unpackWARs="true" autoDeploy="true">
+
+         <Context name="example" className="org.apache.catalina.core.StandardContext"
+           path="/example" docBase="../../webapp" >
+         </Context>
+         
+         <Context name="example2" className="org.apache.catalina.core.StandardContext"
+           path="/example2" docBase="../../webapp" >
+         </Context>
+         
+
+        <!-- SingleSignOn valve, share authentication between web applications
+             Documentation at: /docs/config/valve.html -->
+        <!--
+        <Valve className="org.apache.catalina.authenticator.SingleSignOn" />
+        -->
+
+        <!-- Access log processes all example.
+             Documentation at: /docs/config/valve.html
+             Note: The pattern used is equivalent to using pattern="common" -->
+        <Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs"  
+               prefix="localhost_access_log." suffix=".txt"
+               pattern="%h %l %u %t &quot;%r&quot; %s %b" resolveHosts="false"/>
+
+      </Host>
+    </Engine>
+  </Service>
+</Server>

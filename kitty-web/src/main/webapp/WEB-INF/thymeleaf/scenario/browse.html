@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title th:text="'Cotty '+ ${BrowseDir.name}">Browse C:\RECYCLER</title>
+</head>
+<body>
+<script type="text/javascript" src="@{/res/jq/jquery-1.6.2.js}"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  $("#CheckAll").click(function(){
+	  $("input[type='checkbox']").attr('checked', $('#CheckAll').is(':checked'));   
+  });
+});
+</script>
+
+<h1>Browser</h1>
+
+<span th:each="item : ${BrowseParents}">
+<a href="browse.html" th:href="@{browse(goTo=${item.absolutePath})}" th:text="${item.name}"></a> /
+</span>
+
+<br/>
+
+<h2>Reports</h2>
+
+<span th:each="item : ${ReportFiles}">
+<a href="download.html" th:href="@{download(file=${item.absolutePath})}">Download</a> / <a href="delete" th:href="@{delete(file=${item.absolutePath})}">Delete</a>
+<br/>
+</span>
+
+<h2>Scenarios</h2>
+
+<form name="BrowseForm" action="#" th:action="@{tableAction}" th:object="${DirectoryModel}" method="post">
+<input type="hidden" th:field="*{path}" />
+
+Success directory: <input type="text" th:field="*{successDir}" />
+Failure directory: <input type="text" th:field="*{failureDir}" />
+
+<table>
+<thead>
+	<tr>
+	<th></th>
+	<th>Name</th>
+	<th>Validate</th>
+	<th>Execute</th>
+	<th>Message</th>
+	</tr>
+</thead>
+<tr th:each="item,status : *{items}">
+	<td>
+	<input type="hidden" th:field="*{items[__${status.index}__].file}" />
+	<input type="hidden" th:field="*{items[__${status.index}__].message}" />
+	<input type="checkbox" th:field="*{items[__${status.index}__].selected}" />
+	</td>
+	<td>
+	<span th:if="${item.file.directory}">
+		[<a href="browse" th:href="@{browse(goTo=${item.file.absolutePath})}" th:text="${item.file.name}"></a>]
+	</span>
+	<span th:if="${item.file.file}">
+		[<a href="browse" th:href="@{view(file=${item.file.absolutePath})}" th:text="${item.file.name}"></a>]
+	</span>
+	</td>
+	<td>
+		<a href="validate" th:href="@{validate(file=${item.file.absolutePath})}">validate</a>
+	</td>
+	<td>
+		<a href="execute" th:href="@{validate(file=${item.file.absolutePath})}">execute</a>
+	</td>
+	<td th:text="${item.message}"></td>
+</tr>
+<tr>
+	<td><input type="checkbox" id="CheckAll"/></td>
+	<td colspan="4">
+		<input name="validate" type="submit" value="Validate Selected"/>
+		<input name="execute" type="submit" value="Execute Selected"/>
+		<input name="reset" type="submit" value="Reset All"/>
+	</td>
+</tr>
+</table>
+
+</form>
+
+<div th:include="fragments :: copy"></div>
+</body>
+</html>
