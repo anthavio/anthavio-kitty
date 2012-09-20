@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 
+import com.anthavio.spring.ntlm.NTLMSchemeFactory;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.DefaultCredentialsProvider;
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
@@ -18,6 +19,7 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.DomText;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
+import com.gargoylesoftware.htmlunit.html.HtmlButton;
 import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlFileInput;
@@ -32,12 +34,10 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
-import com.anthavio.spring.ntlm.NTLMSchemeFactory;
-
 /**
  * @author vanek
- *
- * Wraper nad HtmlUnit WebClientem. Zjednodusuje vyplnovani inputu.
+ * 
+ *         Wraper nad HtmlUnit WebClientem. Zjednodusuje vyplnovani inputu.
  */
 public class HtmlUnitWrapper {
 
@@ -103,10 +103,11 @@ public class HtmlUnitWrapper {
 		webClient.setCredentialsProvider(new DefaultCredentialsProvider());
 	}
 
-	public void setNTLMCredentials(final String username, final String password, final String host, final int port,
-			final String clientHost, final String clientDomain) {
+	public void setNTLMCredentials(final String username, final String password,
+			final String host, final int port, final String clientHost,
+			final String clientDomain) {
 
-		//htmlunit 2.8 is using httpclient 4.x missing ntlm support by default
+		// htmlunit 2.8 is using httpclient 4.x missing ntlm support by default
 		webClient.setWebConnection(new HttpWebConnection(webClient) {
 
 			@Override
@@ -117,9 +118,10 @@ public class HtmlUnitWrapper {
 			}
 		});
 
-		//httpclient 3.x and 4.x
+		// httpclient 3.x and 4.x
 		DefaultCredentialsProvider provider = new DefaultCredentialsProvider();
-		provider.addNTLMCredentials(username, password, host, port, clientHost, clientDomain);
+		provider.addNTLMCredentials(username, password, host, port, clientHost,
+				clientDomain);
 		webClient.setCredentialsProvider(provider);
 	}
 
@@ -139,7 +141,7 @@ public class HtmlUnitWrapper {
 		String url;
 		if (urlBase.endsWith("/") == false) {
 			if (urlOffset.startsWith("/") == false) {
-				//zadne lomitko -> vmezerime tamjedno
+				// zadne lomitko -> vmezerime tamjedno
 				url = urlBase + "/" + urlOffset;
 			} else {
 				url = urlBase + urlOffset;
@@ -148,7 +150,7 @@ public class HtmlUnitWrapper {
 			if (urlOffset.startsWith("/") == false) {
 				url = urlBase + urlOffset;
 			} else {
-				//dvoje lomitka -> jedno ubereme
+				// dvoje lomitka -> jedno ubereme
 				url = urlBase + urlOffset.substring(1);
 			}
 		}
@@ -167,17 +169,33 @@ public class HtmlUnitWrapper {
 		}
 
 		if (form == null) {
-			throw new AssertionError("Form element not found by name or id: " + nameOrId);
+			throw new AssertionError("Form element not found by name or id: "
+					+ nameOrId);
 		}
 		this.form = form;
 		return form;
 	}
 
+	/**
+	 * input type submit
+	 */
 	public HtmlPage submit(String name) throws IOException {
 		log.debug("submit " + name);
 		checkForm();
 		HtmlSubmitInput submit = form.getInputByName(name);
 		page = (HtmlPage) submit.click();
+		form = null;
+		return page;
+	}
+
+	/**
+	 * input type button
+	 */
+	public HtmlPage submitButton(String name) throws IOException {
+		log.debug("submit " + name);
+		checkForm();
+		HtmlButton button = form.getButtonByName(name);
+		page = (HtmlPage) button.click();
 		form = null;
 		return page;
 	}
@@ -189,7 +207,8 @@ public class HtmlUnitWrapper {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> List<T> getElementsByNameOrId(String nameOrId, Class<T> expectedType) {
+	public <T> List<T> getElementsByNameOrId(String nameOrId,
+			Class<T> expectedType) {
 		List<T> results = new ArrayList<T>();
 		List<HtmlElement> elements = page.getElementsByIdAndOrName(nameOrId);
 
@@ -222,11 +241,11 @@ public class HtmlUnitWrapper {
 	public void click(HtmlElement element) throws IOException {
 		log.debug("click on " + element.asText());
 		Page clickedPage = element.click();
-		//link muze byt jen javascriptova funkce
-		//prelezli jsme na nove url?
+		// link muze byt jen javascriptova funkce
+		// prelezli jsme na nove url?
 		if (clickedPage instanceof HtmlPage) {
 			HtmlPage newPage = (HtmlPage) clickedPage;
-			//System.out.println(newPage.asXml());
+			// System.out.println(newPage.asXml());
 			URL newUrl = newPage.getWebResponse().getWebRequest().getUrl();
 			URL oldUrl = page.getWebResponse().getWebRequest().getUrl();
 			boolean isDiffUrl = !newUrl.equals(oldUrl);
@@ -272,9 +291,10 @@ public class HtmlUnitWrapper {
 
 		if (index != -1) {
 			int startIdx = index - 50 < 0 ? 0 : index - 50;
-			int endIdx = index + 50 > pageText.length() ? pageText.length() : index + 50;
-			throw new AssertionError("Text '" + text + "' present on index " + index + "\n" + "..."
-					+ pageText.substring(startIdx, endIdx) + "...");
+			int endIdx = index + 50 > pageText.length() ? pageText.length()
+					: index + 50;
+			throw new AssertionError("Text '" + text + "' present on index " + index
+					+ "\n" + "..." + pageText.substring(startIdx, endIdx) + "...");
 		}
 	}
 
@@ -285,18 +305,21 @@ public class HtmlUnitWrapper {
 
 	public void assertInputValue(String nameOrId, String value) {
 		HtmlInput element = (HtmlInput) assertElementPresent(nameOrId);
-		Assert.assertEquals(element.getValueAttribute().trim(), value, "Element " + element.asXml());
+		Assert.assertEquals(element.getValueAttribute().trim(), value, "Element "
+				+ element.asXml());
 	}
 
 	public void assertElementValue(String nameOrId, String value) {
 		HtmlElement element = assertElementPresent(nameOrId);
-		Assert.assertEquals(element.getTextContent().trim(), value, "Element " + element.asXml());
+		Assert.assertEquals(element.getTextContent().trim(), value, "Element "
+				+ element.asXml());
 	}
 
 	public HtmlElement assertElementPresent(String nameOrId) {
 		List<HtmlElement> elements = page.getElementsByIdAndOrName(nameOrId);
 		if (elements.size() == 0) {
-			throw new AssertionError("Page does not contain element with name or id: " + nameOrId);
+			throw new AssertionError(
+					"Page does not contain element with name or id: " + nameOrId);
 		}
 		return elements.get(0);
 	}
@@ -309,7 +332,9 @@ public class HtmlUnitWrapper {
 				sb.append('\n');
 				sb.append(htmlElement.asXml());
 			}
-			throw new AssertionError("Page contains unwanted element(s) with name or id: " + nameOrId + sb.toString());
+			throw new AssertionError(
+					"Page contains unwanted element(s) with name or id: " + nameOrId
+							+ sb.toString());
 		}
 	}
 
@@ -330,7 +355,8 @@ public class HtmlUnitWrapper {
 		return checkBox;
 	}
 
-	public HtmlOption selectOptionText(String name, String value) throws IOException {
+	public HtmlOption selectOptionText(String name, String value)
+			throws IOException {
 		log.debug("selectOptionText " + name + " " + value);
 		checkForm();
 		HtmlSelect select = form.getSelectByName(name);
@@ -342,7 +368,8 @@ public class HtmlUnitWrapper {
 				return option;
 			}
 		}
-		throw new AssertionError("Option of select with name " + name + " and text " + value + " not found");
+		throw new AssertionError("Option of select with name " + name
+				+ " and text " + value + " not found");
 	}
 
 	public HtmlOption selectOption(String name, String value) throws IOException {
@@ -378,7 +405,8 @@ public class HtmlUnitWrapper {
 	}
 
 	/**
-	 * @param Atribut name elementu select
+	 * @param Atribut
+	 *          name elementu select
 	 * @return vsechny options selected i neselected
 	 */
 	public List<HtmlOption> getSelectOptions(String name) {
@@ -388,7 +416,8 @@ public class HtmlUnitWrapper {
 	}
 
 	/**
-	 * @param Atribut name elementu select
+	 * @param Atribut
+	 *          name elementu select
 	 * @return pouze selected options
 	 */
 	public List<HtmlOption> getSelectedOptions(String name) {
@@ -411,7 +440,8 @@ public class HtmlUnitWrapper {
 	public HtmlPasswordInput setPasswordField(String name, String value) {
 		log.debug("setPasswordField " + name + " " + value);
 		checkForm();
-		HtmlPasswordInput passwordInput = (HtmlPasswordInput) form.getInputByName(name);
+		HtmlPasswordInput passwordInput = (HtmlPasswordInput) form
+				.getInputByName(name);
 		passwordInput.setValueAttribute(value);
 		return passwordInput;
 	}
@@ -422,12 +452,14 @@ public class HtmlUnitWrapper {
 
 		while (!page.asXml().contains(text)) {
 			if (startTime + timeout < System.currentTimeMillis()) {
-				throw new AssertionError("Expected text (" + text + ") not found on page until timeout " + timeout);
+				throw new AssertionError("Expected text (" + text
+						+ ") not found on page until timeout " + timeout);
 			}
 			try {
 				Thread.sleep(500);
 			} catch (InterruptedException ix) {
-				throw new AssertionError("Got interrupted while waiting for text on page");
+				throw new AssertionError(
+						"Got interrupted while waiting for text on page");
 			}
 		}
 	}
@@ -439,14 +471,16 @@ public class HtmlUnitWrapper {
 		String value = input.getValueAttribute();
 		long startTime = System.currentTimeMillis();
 		while (value == null || EMPTY.equals(value)) {
-			//log.info("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+			// log.info("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
 			if (startTime + timeout < System.currentTimeMillis()) {
-				throw new AssertionError("Input " + name + " did not became enabled until timeout " + timeout);
+				throw new AssertionError("Input " + name
+						+ " did not became enabled until timeout " + timeout);
 			}
 			try {
 				Thread.sleep(500);
 			} catch (InterruptedException ix) {
-				throw new AssertionError("Got interrupted while waiting for Input " + name);
+				throw new AssertionError("Got interrupted while waiting for Input "
+						+ name);
 			}
 		}
 	}
@@ -457,14 +491,16 @@ public class HtmlUnitWrapper {
 		HtmlInput input = form.getInputByName(name);
 		long startTime = System.currentTimeMillis();
 		while (input.isDisabled() || input.isReadOnly()) {
-			//log.info("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+			// log.info("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
 			if (startTime + timeout < System.currentTimeMillis()) {
-				throw new AssertionError("Input " + name + " did not became enabled until timeout " + timeout);
+				throw new AssertionError("Input " + name
+						+ " did not became enabled until timeout " + timeout);
 			}
 			try {
 				Thread.sleep(500);
 			} catch (InterruptedException ix) {
-				throw new AssertionError("Got interrupted while waiting for Input " + name);
+				throw new AssertionError("Got interrupted while waiting for Input "
+						+ name);
 			}
 		}
 	}
@@ -514,21 +550,22 @@ public class HtmlUnitWrapper {
 	}
 
 	/*
-		public HtmlRadioButtonInput clickRadioButton(String name) throws IOException {
-			HtmlRadioButtonInput radio = (HtmlRadioButtonInput) form.getInputByName(name);
-			radio.click();
-			return radio;
-		}
+	 * public HtmlRadioButtonInput clickRadioButton(String name) throws
+	 * IOException { HtmlRadioButtonInput radio = (HtmlRadioButtonInput)
+	 * form.getInputByName(name); radio.click(); return radio; }
 	 */
-	public HtmlRadioButtonInput clickRadioButton(String name, Integer value) throws IOException {
+	public HtmlRadioButtonInput clickRadioButton(String name, Integer value)
+			throws IOException {
 		return clickRadioButton(name, String.valueOf(value));
 	}
 
-	public HtmlRadioButtonInput clickRadioButton(String name, Boolean value) throws IOException {
+	public HtmlRadioButtonInput clickRadioButton(String name, Boolean value)
+			throws IOException {
 		return clickRadioButton(name, String.valueOf(value));
 	}
 
-	public HtmlRadioButtonInput clickRadioButton(String name, String value) throws IOException {
+	public HtmlRadioButtonInput clickRadioButton(String name, String value)
+			throws IOException {
 		log.debug("clickRadioButton " + name + " " + value);
 		checkForm();
 		List<HtmlRadioButtonInput> radioButtons = form.getRadioButtonsByName(name);
@@ -538,7 +575,8 @@ public class HtmlUnitWrapper {
 				return radio;
 			}
 		}
-		throw new AssertionError("Radio with name " + name + " and value " + value + " not found");
+		throw new AssertionError("Radio with name " + name + " and value " + value
+				+ " not found");
 	}
 
 	public HtmlPage getPage() {
