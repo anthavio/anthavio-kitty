@@ -1,4 +1,4 @@
-package com.anthavio.jetty;
+package com.anthavio.jetty.spring;
 
 import java.util.Map;
 

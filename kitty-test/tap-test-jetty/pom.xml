@@ -180,7 +180,7 @@
 						</aspectLibrary>
 						<aspectLibrary>
 							<groupId>com.anthavio.util</groupId>
-							<artifactId>komix-aspects</artifactId>
+							<artifactId>anthavio-aspects</artifactId>
 						</aspectLibrary>
 					</aspectLibraries>
 				</configuration>

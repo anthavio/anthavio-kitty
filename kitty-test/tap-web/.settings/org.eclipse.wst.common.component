@@ -6,16 +6,16 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/target/generated-sources/jaxb"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/target/generated-sources/querydsl"/>
-        <dependent-module archiveName="komix-spring-1.1.3-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/komix-spring/komix-spring">
+        <dependent-module archiveName="anthavio-spring-1.0.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/anthavio-spring/anthavio-spring">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="komix-xml-1.0.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/komix-xml/komix-xml">
+        <dependent-module archiveName="anthavio-commons-1.0.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/anthavio-commons/anthavio-commons">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="komix-dao-1.1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/komix-dao/komix-dao">
+        <dependent-module archiveName="anthavio-dao-1.0.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/anthavio-dao/anthavio-dao">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="komix-common-1.1.3-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/komix-common/komix-common">
+        <dependent-module archiveName="anthavio-aspects-1.0.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/anthavio-aspects/anthavio-aspects">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="context-root" value="tap-web"/>

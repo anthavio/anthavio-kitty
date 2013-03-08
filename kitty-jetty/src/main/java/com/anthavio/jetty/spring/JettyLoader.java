@@ -1,18 +1,22 @@
 /**
  * 
  */
-package com.anthavio.jetty.test;
+package com.anthavio.jetty.spring;
+
+import java.util.Arrays;
 
 import org.springframework.beans.factory.access.BeanFactoryLocator;
 import org.springframework.beans.factory.access.BeanFactoryReference;
 import org.springframework.context.access.ContextSingletonBeanFactoryLocator;
 import org.springframework.context.support.AbstractApplicationContext;
 
-import com.anthavio.jetty.JettyWrapper;
+import com.anthavio.jetty.test.JettyConfig;
+import com.anthavio.jetty.test.JettyConfigs;
 import com.anthavio.spring.test.ContextRefLoader;
-import edu.emory.mathcs.backport.java.util.Arrays;
 
 /**
+ * FIXME upgrade to use JettyManager to manage instances
+ * 
  * @author vanek
  *
  */
@@ -63,7 +67,7 @@ public class JettyLoader extends ContextRefLoader {
 		String jettyHome = annotation.home();
 		String[] configs = annotation.configs();
 		logger.info("Starting jetty " + jettyHome + " " + Arrays.asList(configs));
-		new JettyWrapper(jettyHome, configs).start();
+		//new JettyWrapper(jettyHome, configs).start();
 	}
 
 }

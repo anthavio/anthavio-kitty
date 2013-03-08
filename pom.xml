@@ -60,6 +60,13 @@
 
 	</developers>
 	
+	<repositories>
+		<repository>
+			<id>atlassian</id> <!-- xerces 2.11.0 -->
+			<url>https://maven.atlassian.com/content/groups/public</url>
+		</repository>
+	</repositories>
+	
 	<dependencyManagement>
 		<dependencies>
 			
@@ -422,6 +429,12 @@
 			<dependency>
 				<groupId>com.anthavio</groupId>
 				<artifactId>anthavio-spring</artifactId>
+				<version>1.0.0-SNAPSHOT</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>com.anthavio</groupId>
+				<artifactId>anthavio-xml</artifactId>
 				<version>1.0.0-SNAPSHOT</version>
 			</dependency>
 			

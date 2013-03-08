@@ -29,6 +29,11 @@
 		
 		<dependency>
 			<groupId>com.anthavio</groupId>
+			<artifactId>anthavio-xml</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.anthavio</groupId>
 			<artifactId>anthavio-aspects</artifactId>
 		</dependency>
 		
