@@ -18,7 +18,7 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 
 	<ctx:annotation-config />
 	
-	<ctx:component-scan base-package="com.anthavio.kitty.webmvc" />
+	<ctx:component-scan base-package="net.anthavio.kitty.webmvc" />
 	
 	<mvc:resources mapping="/res/**" location="/res/" />
 	
@@ -32,7 +32,7 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 	<mvc:annotation-driven conversion-service="FormattingConversionService" validator="ValidatorFactory" />
 	
 	<mvc:interceptors>
-		<bean id="SessionInitInterceptor" class="com.anthavio.kitty.webmvc.SessionInitInterceptor" />
+		<bean id="SessionInitInterceptor" class="net.anthavio.kitty.webmvc.SessionInitInterceptor" />
 		<bean id="LocaleChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
 			<property name="paramName" value="locale"/>
 		</bean>
@@ -55,7 +55,7 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 				<bean id="LocaleChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
 					<property name="paramName" value="locale"/>
 				</bean>
-				<bean id="SessionInitInterceptor" class="com.anthavio.kitty.webmvc.SessionInitInterceptor" />
+				<bean id="SessionInitInterceptor" class="net.anthavio.kitty.webmvc.SessionInitInterceptor" />
 			</list>
 		</property>
 	</bean>
@@ -64,8 +64,8 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 	<bean id="FormattingConversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
 		<property name="converters">
 			<list>
-				<bean class="com.anthavio.spring.web.EnumIntConverterFactory"/>
-				<bean class="com.anthavio.spring.web.EnumStrConverterFactory"/>
+				<bean class="net.anthavio.spring.web.EnumIntConverterFactory"/>
+				<bean class="net.anthavio.spring.web.EnumStrConverterFactory"/>
 			</list>
 		</property>
 	</bean>

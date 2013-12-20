@@ -4,11 +4,11 @@
 	xsi:schemaLocation="
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="tap-dbmodel" class="com.anthavio.spring.AnnotationConfigHierarchyFactory" 
+	<bean id="tap-dbmodel" class="net.anthavio.spring.AnnotationConfigHierarchyFactory" 
 		lazy-init="true">
 		<constructor-arg>
 			<list>
-				<value>com.anthavio.tap.db.SpringConfig</value>
+				<value>net.anthavio.tap.db.SpringConfig</value>
 			</list>
 		</constructor-arg>
 		<constructor-arg>
@@ -16,11 +16,11 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 		</constructor-arg>
 	</bean>
 	
-	<bean id="tap-services" class="com.anthavio.spring.AnnotationConfigHierarchyFactory" 
+	<bean id="tap-services" class="net.anthavio.spring.AnnotationConfigHierarchyFactory" 
 		lazy-init="true">
 		<constructor-arg>
 			<list>
-				<value>com.anthavio.tap.svc.SpringConfig</value>
+				<value>net.anthavio.tap.svc.SpringConfig</value>
 			</list>
 		</constructor-arg>
 		<constructor-arg>

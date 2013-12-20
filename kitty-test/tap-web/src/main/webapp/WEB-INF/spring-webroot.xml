@@ -114,7 +114,7 @@ http://www.springframework.org/schema/security http://www.springframework.org/sc
 		<property name="authenticationManager">
 			<bean id="AuthenticationManager" class="org.springframework.security.authentication.ProviderManager">
 				<property name="providers">
-					<bean class="com.anthavio.spring.security.DummyAuthenticationProvider">
+					<bean class="net.anthavio.spring.security.DummyAuthenticationProvider">
 						<property name="roles">
 							<list>
 								<value>ROLE_USER</value>
@@ -152,7 +152,7 @@ http://www.springframework.org/schema/security http://www.springframework.org/sc
 			</bean>
 		</property>
 		<property name="authenticationFailureHandler">
-			<bean class="com.anthavio.spring.security.ExceptionMappingAuthenticationFailureHandler">
+			<bean class="net.anthavio.spring.security.ExceptionMappingAuthenticationFailureHandler">
 				<property name="defaultFailureUrl" value="/ui/login.htm?authfailed=true"/>
 				<property name="exceptionMappings">
 					<map>
@@ -195,11 +195,11 @@ http://www.springframework.org/schema/security http://www.springframework.org/sc
 		<property name="defaultTargetUrl" value="/ui/welcome.htm"/>
 	</bean>
 	
-	<bean class="com.anthavio.spring.security.AuthenticationListener">
+	<bean class="net.anthavio.spring.security.AuthenticationListener">
 		<property name="logInteractiveAuthenticationSuccessEvents" value="false"/>
 	</bean>
     
-	<bean class="com.anthavio.spring.security.AuthorizationListener"/>
+	<bean class="net.anthavio.spring.security.AuthorizationListener"/>
 
 	<!-- 12. Anonymous Authentication http://static.springsource.org/spring-security/site/docs/3.0.x/reference/anonymous.html -->
 	

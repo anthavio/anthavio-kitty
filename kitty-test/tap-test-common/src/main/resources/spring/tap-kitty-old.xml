@@ -20,12 +20,12 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 		<constructor-arg value="ki-"/>
 	</bean>
 	
-	<bean id="KittyScenarioBinder" class="com.anthavio.xml.jaxb.SimpleJaxbBinder">
-		<constructor-arg name="klass" value="com.anthavio.tap.test.TapScenario"/>
+	<bean id="KittyScenarioBinder" class="net.anthavio.xml.jaxb.SimpleJaxbBinder">
+		<constructor-arg name="klass" value="net.anthavio.tap.test.TapScenario"/>
 		<constructor-arg name="useSchema" value="false"/>
 	</bean>
 	
-	<bean id="KittyOptions" class="com.anthavio.kitty.KittyOptions"/>
+	<bean id="KittyOptions" class="net.anthavio.kitty.KittyOptions"/>
 	
 	<bean id="KittyProperties" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="location" value="kitty-tap.properties"/>
@@ -34,17 +34,17 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 		<property name="searchSystemEnvironment" value="true"/>
 	</bean>
 	
-	<bean id="TapWebClient" class="com.anthavio.tap.test.TapWebClient">
+	<bean id="TapWebClient" class="net.anthavio.tap.test.TapWebClient">
 		<constructor-arg value="${tap.webui.url}" />
 	</bean>
 	
-	<bean id="TapWebDriver" class="com.anthavio.tap.test.TapWebDriver">
+	<bean id="TapWebDriver" class="net.anthavio.tap.test.TapWebDriver">
 		<constructor-arg value="${tap.webui.url}" />
 	</bean>
 
 	<bean id="TapMessagesBinder" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
 		<property name="schema" value="schema/PingMessages.xsd"/>
-		<property name="contextPath" value="com.anthavio.example.messages"/>
+		<property name="contextPath" value="net.anthavio.example.messages"/>
 		<property name="marshallerProperties" ref="JaxbMarshallerProperties"/>
 	</bean>
 
@@ -56,7 +56,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 		<property name="defaultUri" value="${tap.wsvc.url}"/>
 	</bean>
 
-	<bean id="TapHttpsSender" class="com.anthavio.spring.ws.HttpClient4Sender">
+	<bean id="TapHttpsSender" class="net.anthavio.spring.ws.HttpClient4Sender">
 		<property name="connectionTimeout" value="${tap.wsvc.connect.timeout}"/>
 		<property name="readTimeout" value="${tap.wsvc.read.timeout}"/>
 		<property name="maxTotalConnections" value="${tap.wsvc.connections}"/>
@@ -69,7 +69,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 		</property>
 	</bean>
 
-	<bean id="TapClientSslFactory" class="com.anthavio.spring.ssl.JksSslSocketFactory">
+	<bean id="TapClientSslFactory" class="net.anthavio.spring.ssl.JksSslSocketFactory">
 		<property name="keyStoreLocation" value="classpath:${tap.wsvc.jks}.jks"/>
 		<property name="keyStorePassword" value="kokosak"/>
 		<property name="privateKeyPassword" value="kokosak"/>

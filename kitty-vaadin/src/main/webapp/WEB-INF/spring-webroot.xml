@@ -10,6 +10,6 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
 
 
-	<bean class="com.anthavio.vaadin.VaadinApplicationScope"/>
+	<bean class="net.anthavio.vaadin.VaadinApplicationScope"/>
 
 </beans>

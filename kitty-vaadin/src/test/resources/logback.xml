@@ -54,7 +54,7 @@
 		<level value="debug"/>
 	</logger>
 	
-	<logger name="com.anthavio">
+	<logger name="net.anthavio">
 		<level value="debug"/>
 	</logger>
 	

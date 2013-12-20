@@ -55,7 +55,7 @@
   
   <filter>
     <filter-name>UsernameMdcFilter</filter-name>
-    <filter-class>com.anthavio.spring.security.UsernameMdcFilter</filter-class>
+    <filter-class>net.anthavio.spring.security.UsernameMdcFilter</filter-class>
   </filter>
   <filter-mapping>
     <filter-name>UsernameMdcFilter</filter-name>

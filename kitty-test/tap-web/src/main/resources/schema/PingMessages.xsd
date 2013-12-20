@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema" 
-	xmlns:gisms="http://example.anthavio.com/messages"
-	xmlns:gisdt="http://example.anthavio.com/types" 
-	targetNamespace="http://example.anthavio.com/messages"
+	xmlns:gisms="http://example.anthavio.net/messages"
+	xmlns:gisdt="http://example.anthavio.net/types" 
+	targetNamespace="http://example.anthavio.net/messages"
 	elementFormDefault="qualified">
 
-	<import namespace="http://example.anthavio.com/types" schemaLocation="PingTypes.xsd" />
+	<import namespace="http://example.anthavio.net/types" schemaLocation="PingTypes.xsd" />
 
 	<element name="PingRequest">
 		<complexType>

@@ -54,7 +54,7 @@
 		<servlet-class>com.vaadin.terminal.gwt.server.ApplicationServlet</servlet-class>
 		<init-param>
 			<param-name>application</param-name>
-			<param-value>com.anthavio.kitty.vaadin.KittyVaadinApplication</param-value>
+			<param-value>net.anthavio.kitty.vaadin.KittyVaadinApplication</param-value>
 		</init-param>
 	</servlet>
 

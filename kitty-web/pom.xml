@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<parent>
-		<groupId>com.anthavio.kitty</groupId>
+		<groupId>net.anthavio.kitty</groupId>
 		<artifactId>kitty-project</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
@@ -18,7 +18,7 @@
 	<dependencies>
 
 		<dependency>
-			<groupId>com.anthavio.kitty</groupId>
+			<groupId>net.anthavio.kitty</groupId>
 			<artifactId>kitty-core</artifactId>
 		</dependency>
 		
@@ -56,7 +56,7 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>com.anthavio.kitty</groupId>
+			<groupId>net.anthavio.kitty</groupId>
 			<artifactId>kitty-jetty</artifactId>
 			<scope>provided</scope>
 		</dependency>
@@ -155,7 +155,7 @@
 							<artifactId>spring-aspects</artifactId>
 						</aspectLibrary>
 						<aspectLibrary>
-							<groupId>com.anthavio</groupId>
+							<groupId>net.anthavio</groupId>
 							<artifactId>anthavio-aspects</artifactId>
 						</aspectLibrary>
 					</aspectLibraries>

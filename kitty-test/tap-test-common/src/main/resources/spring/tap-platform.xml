@@ -125,7 +125,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 		<entry key="com.sun.xml.bind.namespacePrefixMapper" value-ref="NamespaceMapper"/>
 	</util:map>
 	
-	<bean id="NamespaceMapper" class="com.anthavio.xml.NamespaceMapper">
+	<bean id="NamespaceMapper" class="net.anthavio.xml.NamespaceMapper">
 		<property name="pefixToUriMap">
 			<map>
 				<entry key="xmsg" value="http://example.komix.cz/messages"/>

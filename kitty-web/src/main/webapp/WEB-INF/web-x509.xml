@@ -42,7 +42,7 @@ http://www.springframework.org/schema/security http://www.springframework.org/sc
 
 	<bean id="AuthenticationManager" class="org.springframework.security.authentication.ProviderManager">
 		<property name="providers">
-			<bean class="com.anthavio.spring.security.DummyAuthenticationProvider">
+			<bean class="net.anthavio.spring.security.DummyAuthenticationProvider">
 				<property name="roles">
 					<list>
 						<value>ROLE_USER</value>

@@ -20,7 +20,7 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 	<ctx:annotation-config />
 	
 	<!-- Annotations scan -->
-	<ctx:component-scan base-package="com.anthavio.tap.web" />
+	<ctx:component-scan base-package="net.anthavio.tap.web" />
 	
 	<bean id="DefaultAnnotationHandlerMapping" class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
 		<property name="interceptors">
@@ -55,8 +55,8 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 	<bean id="FormattingConversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
 		<property name="converters">
 			<list>
-				<bean class="com.anthavio.spring.web.EnumIntConverterFactory"/>
-				<bean class="com.anthavio.spring.web.EnumStrConverterFactory"/>
+				<bean class="net.anthavio.spring.web.EnumIntConverterFactory"/>
+				<bean class="net.anthavio.spring.web.EnumStrConverterFactory"/>
 			</list>
 		</property>
 	</bean>
@@ -81,7 +81,7 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 			<list>
 				<bean name="JsonView" class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">
 					<property name="objectMapper">
-						<bean class="com.anthavio.spring.web.JacksonMapperBuilder" factory-method="buildMapper">
+						<bean class="net.anthavio.spring.web.JacksonMapperBuilder" factory-method="buildMapper">
 							<constructor-arg index="0" value="true"/>
 							<constructor-arg index="1" value="true"/>
 						</bean>

@@ -5,7 +5,7 @@
 
 	<Call name="addBean">
 		<Arg>
-			<New class="com.anthavio.jetty.SpringContextDeployer">
+			<New class="net.anthavio.jetty.SpringContextDeployer">
 				<Set name="parentContextKey">kitty-lib</Set>
 			</New>
 		</Arg>
@@ -91,7 +91,7 @@
 		<Item>org.eclipse.jetty.plus.webapp.PlusConfiguration</Item>
 	</Array>
 	
-	<New class="com.anthavio.jetty.WebAppContext">
+	<New class="net.anthavio.jetty.WebAppContext">
 		<Arg><Ref id="Contexts"/></Arg>
 		<Set name="contextPath">/kitty-webmvc</Set>
 		<Set name="baseResource">
@@ -112,7 +112,7 @@
 		</Call>
 	</New>
 
-	<New class="com.anthavio.jetty.WebAppContext">
+	<New class="net.anthavio.jetty.WebAppContext">
 		<Arg><Ref id="Contexts"/></Arg>
 		<Set name="contextPath">/kitty-vaadin</Set>
 		<Set name="war"><SystemProperty name="jetty.home" default="."/>/../../../../../kitty-vaadin/src/main/webapp</Set>
@@ -127,7 +127,7 @@
 	<!--
 	<Call name="addBean">
 		<Arg>
-			<New class="com.anthavio.jetty.WebContextDeployer">
+			<New class="net.anthavio.jetty.WebContextDeployer">
 				<Set name="contexts"><Ref id="Contexts" /></Set>
 				<Set name="contextPath">/tap</Set>
 				<Set name="war"><SystemProperty name="jetty.home" default="."/>/../../../../tap-web/src/main/webapp</Set>
@@ -138,7 +138,7 @@
 	</Call>
 	-->
 	<!--
-	<New class="com.anthavio.jetty.WebAppContext">
+	<New class="net.anthavio.jetty.WebAppContext">
 		<Arg><Ref id="Contexts"/></Arg>
 		<Set name="contextPath">/tap</Set>
 		<Set name="war"><SystemProperty name="jetty.home" default="."/>/../../../../tap-web/src/main/webapp</Set>
@@ -151,7 +151,7 @@
 	</New>
 	-->
 	<!--
-	<New class="com.anthavio.jetty.WebAppContext">
+	<New class="net.anthavio.jetty.WebAppContext">
 		<Arg><Ref id="Contexts"/></Arg>
 		<Set name="contextPath">/kitty-webmvc</Set>
 		<Set name="war"><SystemProperty name="jetty.home" default="."/>/../../../../../kitty-web/src/main/webapp</Set>
@@ -164,7 +164,7 @@
 	</New>
 	-->
 <!--	
-	<New class="com.anthavio.jetty.WebAppContext">
+	<New class="net.anthavio.jetty.WebAppContext">
 		<Arg><Ref id="Contexts"/></Arg>
 		<Set name="contextPath">/kitty-vaadin</Set>
 		<Set name="war"><SystemProperty name="jetty.home" default="."/>/../../../../../kitty-vaadin/src/main/webapp</Set>

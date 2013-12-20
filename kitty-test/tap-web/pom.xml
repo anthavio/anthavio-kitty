@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<parent>
-		<groupId>com.anthavio.kitty</groupId>
+		<groupId>net.anthavio.kitty</groupId>
 		<artifactId>kitty-test</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
@@ -18,18 +18,18 @@
 	<dependencies>
 
 		<dependency>
-			<groupId>com.anthavio</groupId>
+			<groupId>net.anthavio</groupId>
 			<artifactId>anthavio-spring</artifactId>
 		</dependency>
 		
 		<dependency>
-			<groupId>com.anthavio</groupId>
+			<groupId>net.anthavio</groupId>
 			<artifactId>anthavio-dao</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 		
 		<dependency>
-			<groupId>com.anthavio.kitty</groupId>
+			<groupId>net.anthavio.kitty</groupId>
 			<artifactId>kitty-jetty</artifactId>
 			<scope>provided</scope>
 		</dependency>
@@ -104,7 +104,7 @@
 		
 		<!--
 		<dependency>
-			<groupId>com.anthavio.util</groupId>
+			<groupId>net.anthavio.util</groupId>
 			<artifactId>komix-spring-security-ntlm</artifactId>
 			<version>1.0.1</version>
 		</dependency>
@@ -182,7 +182,7 @@
 							<artifactId>spring-aspects</artifactId>
 						</aspectLibrary>
 						<aspectLibrary>
-							<groupId>com.anthavio</groupId>
+							<groupId>net.anthavio</groupId>
 							<artifactId>anthavio-aspects</artifactId>
 						</aspectLibrary>
 					</aspectLibraries>
@@ -191,7 +191,7 @@
 			
 			<plugin>
 				<groupId>org.jvnet.jaxb2.maven2</groupId>
-				<artifactId>maven-jaxb21-plugin</artifactId>
+				<artifactId>maven-jaxb22-plugin</artifactId>
 				<executions>
 					<execution>
 						<phase>generate-sources</phase>
@@ -228,7 +228,7 @@
 			
 			<plugin>
 				<groupId>com.mysema.maven</groupId>
-				<artifactId>maven-apt-plugin</artifactId>
+				<artifactId>apt-maven-plugin</artifactId>
 				<executions>
 					<execution>
 						<phase>generate-sources</phase>

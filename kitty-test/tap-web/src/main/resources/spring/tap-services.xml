@@ -12,11 +12,11 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 
 	<import resource="classpath:spring/tap-security.xml"/>
 
-	<ctx:component-scan base-package="com.anthavio.tap.svc"/>
+	<ctx:component-scan base-package="net.anthavio.tap.svc"/>
 	
 	<bean id="TapMessagesBinder" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
 		<property name="schema" value="schema/PingMessages.xsd"/>
-		<property name="contextPath" value="com.anthavio.example.messages"/>
+		<property name="contextPath" value="net.anthavio.example.messages"/>
 		<property name="marshallerProperties" ref="JaxbMarshallerProperties"/>
 	</bean>
 

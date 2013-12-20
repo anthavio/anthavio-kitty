@@ -85,7 +85,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 		</property>
 	</bean>
 -->
-	<bean id="AccessDecisionManager" class="com.anthavio.spring.security.AccessDecisionManager">
+	<bean id="AccessDecisionManager" class="net.anthavio.spring.security.AccessDecisionManager">
 		<property name="allowIfAllAbstainDecisions" value="false"/>
 		<property name="decisionVoters">
 			<list>
@@ -135,7 +135,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 		</constructor-arg>
 		<!--
 		<property name="userDetailsContextMapper">
-			<bean class="com.anthavio.nkc.services.user.NkcUserDetailsContextMapper"/>
+			<bean class="net.anthavio.nkc.services.user.NkcUserDetailsContextMapper"/>
 		</property>
 		-->
 	</bean>
@@ -161,7 +161,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 		</property>
 	</bean>
 <!--
-	<bean id="NkcUserDetailsService" class="com.anthavio.nkc.services.user.NkcUserDetailsService">
+	<bean id="NkcUserDetailsService" class="net.anthavio.nkc.services.user.NkcUserDetailsService">
 		<property name="userDetailsService" ref="TestUserDetailsService"/>
 	</bean>
 

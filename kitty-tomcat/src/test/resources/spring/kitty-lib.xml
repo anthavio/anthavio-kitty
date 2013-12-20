@@ -16,11 +16,11 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 		<constructor-arg value="ki-"/>
 	</bean>
 	
-	<bean id="ScenarioBinder" class="com.anthavio.xml.jaxb.SimpleJaxbBinder">
-		<constructor-arg name="klass" value="com.anthavio.kitty.test.ExampleScenario"/>
+	<bean id="ScenarioBinder" class="net.anthavio.xml.jaxb.SimpleJaxbBinder">
+		<constructor-arg name="klass" value="net.anthavio.kitty.test.ExampleScenario"/>
 		<constructor-arg name="useSchema" value="false"/>
 	</bean>
 	
-	<bean id="KittyOptions" class="com.anthavio.kitty.KittyOptions"/>
+	<bean id="KittyOptions" class="net.anthavio.kitty.KittyOptions"/>
 	
 </beans>

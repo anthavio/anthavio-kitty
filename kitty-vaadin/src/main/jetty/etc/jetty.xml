@@ -84,7 +84,7 @@
 	
 	<Call name="addBean">
 		<Arg>
-			<New class="com.anthavio.jetty.WebContextDeployer">
+			<New class="net.anthavio.jetty.WebContextDeployer">
 				<Set name="contexts"><Ref id="Contexts" /></Set>
 				<Set name="contextPath">/kitty</Set>
 				<Set name="war"><SystemProperty name="jetty.home" default="."/>/../webapp</Set>

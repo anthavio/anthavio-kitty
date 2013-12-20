@@ -4,11 +4,11 @@
 	xsi:schemaLocation="
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="kitty-lib" class="com.anthavio.spring.AnnotationConfigHierarchyFactory" 
+	<bean id="kitty-lib" class="net.anthavio.spring.AnnotationConfigHierarchyFactory" 
 		lazy-init="true">
 		<constructor-arg>
 			<list>
-				<value>com.anthavio.tap.test.SpringKittyConfig</value>
+				<value>net.anthavio.tap.test.SpringKittyConfig</value>
 			</list>
 		</constructor-arg>
 		<constructor-arg>
@@ -20,7 +20,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 		lazy-init="true">
 		<constructor-arg >
 			<array value-type="java.lang.Class">
-				<value>com.anthavio.tap.test.SpringPlatformConfig</value>
+				<value>net.anthavio.tap.test.SpringPlatformConfig</value>
 			</array>
 		</constructor-arg>
 	</bean>

@@ -4,19 +4,19 @@
 	xmlns:trx="http://www.springframework.org/schema/tx"
 	xmlns:jee="http://www.springframework.org/schema/jee"
 	xmlns:ctx="http://www.springframework.org/schema/context"
-	xmlns:kit="http://www.komix.com/schema/kitty"
+	xmlns:kit="http://anthavio.net/schema/kitty"
 	xsi:schemaLocation="
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
 http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-http://www.komix.com/schema/kitty http://www.komix.com/schema/kitty/spring-kitty.xsd">
+http://anthavio.net/schema/kitty http://anthavio.net/schema/kitty/spring-kitty.xsd">
 
 	<ctx:annotation-config/>
 
 	<trx:annotation-driven mode="aspectj"/>
 	
-	<kit:kitty scenario-class="com.anthavio.tap.test.TapScenario" options-class="com.anthavio.kitty.KittyOptions">
+	<kit:kitty scenario-class="net.anthavio.tap.test.TapScenario" options-class="net.anthavio.kitty.KittyOptions">
 		<!--
 		<kit:persistence>
 		-->
@@ -45,12 +45,12 @@ http://www.komix.com/schema/kitty http://www.komix.com/schema/kitty/spring-kitty
 		<constructor-arg value="ki-"/>
 	</bean>
 	
-	<bean id="KittyScenarioBinder" class="com.anthavio.xml.jaxb.SimpleJaxbBinder">
-		<constructor-arg name="klass" value="com.anthavio.tap.test.TapScenario"/>
+	<bean id="KittyScenarioBinder" class="net.anthavio.xml.jaxb.SimpleJaxbBinder">
+		<constructor-arg name="klass" value="net.anthavio.tap.test.TapScenario"/>
 		<constructor-arg name="useSchema" value="false"/>
 	</bean>
 	
-	<bean id="KittyOptions" class="com.anthavio.kitty.KittyOptions"/>
+	<bean id="KittyOptions" class="net.anthavio.kitty.KittyOptions"/>
 	-->
 	<!--
 	<bean id="KittyProperties" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -60,17 +60,17 @@ http://www.komix.com/schema/kitty http://www.komix.com/schema/kitty/spring-kitty
 		<property name="searchSystemEnvironment" value="true"/>
 	</bean>
 	
-	<bean id="TapWebClient" class="com.anthavio.tap.test.TapWebClient">
+	<bean id="TapWebClient" class="net.anthavio.tap.test.TapWebClient">
 		<constructor-arg value="${tap.webui.url}" />
 	</bean>
 	
-	<bean id="TapWebDriver" class="com.anthavio.tap.test.TapWebDriver">
+	<bean id="TapWebDriver" class="net.anthavio.tap.test.TapWebDriver">
 		<constructor-arg value="${tap.webui.url}" />
 	</bean>
 
 	<bean id="TapMessagesBinder" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
 		<property name="schema" value="schema/PingMessages.xsd"/>
-		<property name="contextPath" value="com.anthavio.example.messages"/>
+		<property name="contextPath" value="net.anthavio.example.messages"/>
 		<property name="marshallerProperties" ref="JaxbMarshallerProperties"/>
 	</bean>
 
@@ -82,7 +82,7 @@ http://www.komix.com/schema/kitty http://www.komix.com/schema/kitty/spring-kitty
 		<property name="defaultUri" value="${tap.wsvc.url}"/>
 	</bean>
 
-	<bean id="TapHttpsSender" class="com.anthavio.spring.ws.HttpClient4Sender">
+	<bean id="TapHttpsSender" class="net.anthavio.spring.ws.HttpClient4Sender">
 		<property name="connectionTimeout" value="${tap.wsvc.connect.timeout}"/>
 		<property name="readTimeout" value="${tap.wsvc.read.timeout}"/>
 		<property name="maxTotalConnections" value="${tap.wsvc.connections}"/>
@@ -95,7 +95,7 @@ http://www.komix.com/schema/kitty http://www.komix.com/schema/kitty/spring-kitty
 		</property>
 	</bean>
 
-	<bean id="TapClientSslFactory" class="com.anthavio.spring.ssl.JksSslSocketFactory">
+	<bean id="TapClientSslFactory" class="net.anthavio.spring.ssl.JksSslSocketFactory">
 		<property name="keyStoreLocation" value="classpath:${tap.wsvc.jks}.jks"/>
 		<property name="keyStorePassword" value="kokosak"/>
 		<property name="privateKeyPassword" value="kokosak"/>

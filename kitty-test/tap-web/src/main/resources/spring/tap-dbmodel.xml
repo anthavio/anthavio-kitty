@@ -10,7 +10,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-	<ctx:component-scan base-package="com.anthavio.tap.db"/>
+	<ctx:component-scan base-package="net.anthavio.tap.db"/>
 	
 	<trx:annotation-driven mode="aspectj"/>
 	
