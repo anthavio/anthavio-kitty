@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>net.anthavio.maven</groupId>
 		<artifactId>anthavio-super-pom</artifactId>
-		<version>1-SNAPSHOT</version>
+		<version>1</version>
 	</parent>
 	
 	<groupId>net.anthavio.kitty</groupId>
@@ -27,18 +27,20 @@
 		<slf4j.version>1.7.5</slf4j.version>
 		<logback.version>1.0.13</logback.version>
 		<jetty.version>8.1.13</jetty.version>
-		<spring.version>3.2.5.RELEASE</spring.version>
-		<spring.security.version>3.1.2.RELEASE</spring.security.version>
+		<spring.version>3.2.7.RELEASE</spring.version>
+		<spring.security.version>3.1.4.RELEASE</spring.security.version>
 	</properties>
 	
 	<modules>
 		<module>kitty-core</module>
+		<module>kitty-web</module>
+		<module>kitty-vaadin</module>
+		<!--
+		<module>kitty-test</module>
 		<module>kitty-jetty</module>
 		<module>kitty-tomcat</module>
 		<module>kitty-swing</module>
-		<module>kitty-web</module>
-		<module>kitty-vaadin</module>
-		<module>kitty-test</module>
+		-->
 	</modules>
 
 	<developers>
@@ -87,18 +89,6 @@
 			
 			<dependency>
 				<groupId>net.anthavio.kitty</groupId>
-				<artifactId>kitty-jetty</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			
-			<dependency>
-				<groupId>net.anthavio.kitty</groupId>
-				<artifactId>kitty-tomcat</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			
-			<dependency>
-				<groupId>net.anthavio.kitty</groupId>
 				<artifactId>kitty-web</artifactId>
 				<version>${project.version}</version>
 				<type>war</type>
@@ -135,6 +125,18 @@
 				<artifactId>kitty-vaadin</artifactId>
 				<version>${project.version}</version>
 				<classifier>classes</classifier>
+			</dependency>
+			<!--
+			<dependency>
+				<groupId>net.anthavio.kitty</groupId>
+				<artifactId>kitty-jetty</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>net.anthavio.kitty</groupId>
+				<artifactId>kitty-tomcat</artifactId>
+				<version>${project.version}</version>
 			</dependency>
 			
 			<dependency>
@@ -174,7 +176,7 @@
 				<artifactId>tap-test-jetty</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-			
+			-->
 			<!-- spring framework -->
 			
 			<dependency>
@@ -188,53 +190,13 @@
 			<!-- spring security -->
 			
 			<dependency>
-				<groupId>org.springframework.security</groupId>
-				<artifactId>spring-security-core</artifactId>
+				<groupId>net.anthavio.maven</groupId>
+				<artifactId>spring-security-bom</artifactId>
 				<version>${spring.security.version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>org.aspectj</groupId>
-	  				<artifactId>aspectjweaver</artifactId>
-					</exclusion>
-				</exclusions>
+				<type>pom</type>
+				<scope>import</scope>
 			</dependency>
-			
-			<dependency>
-				<groupId>org.springframework.security</groupId>
-				<artifactId>spring-security-config</artifactId>
-				<version>${spring.security.version}</version>
-			</dependency>
-			
-			<dependency>
-				<groupId>org.springframework.security</groupId>
-				<artifactId>spring-security-web</artifactId>
-				<version>${spring.security.version}</version>
-			</dependency>
-			
-			<dependency>
-				<groupId>org.springframework.security</groupId>
-				<artifactId>spring-security-taglibs</artifactId>
-				<version>${spring.security.version}</version>
-			</dependency>
-			
-			<dependency>
-				<groupId>org.springframework.security</groupId>
-				<artifactId>spring-security-aspects</artifactId>
-				<version>${spring.security.version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>org.aspectj</groupId>
-	  				<artifactId>aspectjweaver</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			
-			<dependency>
-				<groupId>org.springframework.security</groupId>
-				<artifactId>spring-security-ldap</artifactId>
-				<version>${spring.security.version}</version>
-			</dependency>
-			
+
 			<!-- spring webservices -->
 
 			<dependency>
@@ -289,6 +251,12 @@
 			
 			<dependency>
 				<groupId>net.anthavio</groupId>
+				<artifactId>anthavio-jetty</artifactId>
+				<version>1.0.0-SNAPSHOT</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>net.anthavio</groupId>
 				<artifactId>anthavio-xml</artifactId>
 				<version>1.0.0-SNAPSHOT</version>
 			</dependency>
@@ -296,7 +264,7 @@
 			<dependency>
 				<groupId>net.anthavio</groupId>
 				<artifactId>anthavio-aspects</artifactId>
-				<version>1.0.0-SNAPSHOT</version>
+				<version>1.0.0</version>
 			</dependency>
 			
 			<dependency>
@@ -393,13 +361,13 @@
 			<dependency>
 				<groupId>org.apache.poi</groupId>
 				<artifactId>poi</artifactId>
-				<version>3.8</version>
+				<version>3.9</version>
 			</dependency>
 			
 			<dependency>
 				<groupId>com.h2database</groupId>
 				<artifactId>h2</artifactId>
-				<version>1.3.171</version>
+				<version>1.3.173</version>
 			</dependency>
 			
 			<!-- test frameworks -->
@@ -407,7 +375,7 @@
 			<dependency>
 				<groupId>org.testng</groupId>
 				<artifactId>testng</artifactId>
-				<version>6.5.2</version>
+				<version>6.8.7</version>
 				<exclusions>
 					<exclusion>
 						<groupId>org.yaml</groupId>
@@ -418,8 +386,8 @@
 
 			<dependency>
 				<groupId>org.easytesting</groupId>
-				<artifactId>fest-assert</artifactId>
-				<version>1.4</version>
+				<artifactId>fest-assert-core</artifactId>
+				<version>2.0M10</version>
 			</dependency>
 			
 			<dependency>
