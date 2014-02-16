@@ -6,8 +6,8 @@ package net.anthavio.kitty.vaadin;
 import java.io.File;
 
 import net.anthavio.kitty.Kitty;
-import net.anthavio.kitty.jetty.JettyWrapper;
-import net.anthavio.kitty.server.ServerWrapper;
+import net.anthavio.sewer.ServerInstance;
+import net.anthavio.sewer.jetty.JettyWrapper;
 
 
 /**
@@ -26,7 +26,7 @@ public class KittyStarter {
 		}
 	}
 
-	private static ServerWrapper getServer() {
+	private static ServerInstance getServer() {
 		String jettyHome;
 		if (new File("etc/webdefault.xml").exists()) {
 			jettyHome = "."; //Standalone Kitty

@@ -31,13 +31,13 @@ import org.springframework.util.Assert;
 public abstract class Scenario {
 
 	@XmlTransient
-	protected final Logger log = LoggerFactory.getLogger(getClass());
+	protected transient final Logger log = LoggerFactory.getLogger(getClass());
 
 	@XmlTransient
 	private File scenarioFile;
 
 	@XmlTransient
-	private File directory;
+	private File directory; //execution directory
 
 	@XmlTransient
 	private final ScenarioMultiListener listener = new ScenarioMultiListener();

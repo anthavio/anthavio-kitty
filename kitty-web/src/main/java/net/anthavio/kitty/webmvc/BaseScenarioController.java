@@ -8,28 +8,18 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlTransient;
 
 import net.anthavio.kitty.Kitty;
-import net.anthavio.kitty.KittyException;
 import net.anthavio.kitty.model.DirectoryItem;
 import net.anthavio.kitty.model.DirectoryModel;
 import net.anthavio.kitty.model.ScenarioExecutor;
 import net.anthavio.kitty.scenario.Scenario;
-import net.anthavio.kitty.scenario.Step;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -118,13 +108,13 @@ public class BaseScenarioController {
 		model.addAttribute("File", file);
 
 		try {
-			Scenario scenario = kitty.getScenarioBinder().load(scenarioXml);
+			Scenario scenario = kitty.getScenarioBinder().load(new StringReader(scenarioXml));
 			scenario.validate();
 		} catch (Exception x) {
 			model.addAttribute("XmlError", x);
 		}
 		addBrowsePaths(browseDir, model);
-		addJaxbStepInfo(model);
+		//addJaxbStepInfo(model);
 	}
 
 	@RequestMapping(value = "/view", params = "index")
@@ -149,10 +139,10 @@ public class BaseScenarioController {
 		model.addAttribute("ScenarioXml", scenarioXml);
 		model.addAttribute("File", file);
 		addBrowsePaths(browseDir, model);
-		addJaxbStepInfo(model);
+		//addJaxbStepInfo(model);
 
 		try {
-			Scenario scenario = kitty.getScenarioBinder().load(scenarioXml);
+			Scenario scenario = kitty.getScenarioBinder().load(new StringReader(scenarioXml));
 			scenario.validate();
 			//save only loaded and validated
 			FileUtils.writeStringToFile(file, scenarioXml, "utf-8");
@@ -358,7 +348,8 @@ public class BaseScenarioController {
 		});
 		model.addAttribute("ReportFiles", excelFiles);
 	}
-
+/*
+	//this is valiant attepmtto providesome infrmation about avaliable steps and it's attributes
 	private void addJaxbStepInfo(Model model) {
 		Class<Scenario> jaxbClass = kitty.getScenarioBinder().getJaxbClass();
 		XmlElements xmlElements;
@@ -424,7 +415,7 @@ public class BaseScenarioController {
 			fields.add(new StepXmlElement(field.getName(), field.getType(), false, null));
 		}
 	}
-
+*/
 	private void addBrowsePaths(File browseDir, Model model) {
 		List<File> browseParents = new ArrayList<File>();
 		browseParents.add(browseDir);

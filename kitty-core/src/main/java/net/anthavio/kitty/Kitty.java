@@ -3,6 +3,7 @@ package net.anthavio.kitty;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Date;
@@ -16,6 +17,7 @@ import net.anthavio.kitty.console.CmdLineConsole;
 import net.anthavio.kitty.model.DirectoryItem;
 import net.anthavio.kitty.model.DirectoryModel;
 import net.anthavio.kitty.scenario.Scenario;
+import net.anthavio.kitty.scenario.ScenarioBinder;
 import net.anthavio.kitty.scenario.ScenarioFileFilter;
 import net.anthavio.kitty.tool.ToolUtils;
 import net.anthavio.spring.ContextHelper;
@@ -54,18 +56,18 @@ public class Kitty implements ApplicationContextAware {
 	//stav adresaru si budeme drzet v globalni promenne
 	private Map<File, DirectoryModel> dirMap = new HashMap<File, DirectoryModel>();
 
-	private final SimpleJaxbBinder<Scenario> scenarioBinder;
+	private final ScenarioBinder scenarioBinder;
 
 	private final KittyOptions options;
 
-	public Kitty(KittyOptions options, SimpleJaxbBinder<Scenario> scenarioBinder) {
+	public Kitty(KittyOptions options, ScenarioBinder scenarioBinder) {
 		if (options == null) {
 			throw new IllegalArgumentException("Null Kitty options");
 		}
 		this.options = options;
 
 		if (scenarioBinder == null) {
-			throw new IllegalArgumentException("Null scenario binder");
+			throw new IllegalArgumentException("Null ScenarioBinder");
 		}
 		this.scenarioBinder = scenarioBinder;
 	}
@@ -121,7 +123,7 @@ public class Kitty implements ApplicationContextAware {
 		} catch (IOException iox) {
 			throw new KittyException("Error reading scenario " + file, iox);
 		}
-		Scenario scenario = scenarioBinder.load(xml);
+		Scenario scenario = scenarioBinder.load(new StringReader(xml));
 		scenario.setScenarioFile(file);
 		return scenario;
 	}
@@ -237,16 +239,16 @@ public class Kitty implements ApplicationContextAware {
 	public static <T extends Scenario> void execute(T scenario) {
 		ApplicationContext spring = ContextHelper.i().locateContext("kitty-lib");
 		Kitty kitty = spring.getBean(Kitty.class);
-		SimpleJaxbBinder<Scenario> binder = kitty.getScenarioBinder();
+		ScenarioBinder binder = kitty.getScenarioBinder();
 		execute(binder, scenario);
 	}
 
-	public SimpleJaxbBinder<Scenario> getScenarioBinder() {
+	public ScenarioBinder getScenarioBinder() {
 		return scenarioBinder;
 	}
 
 	@ApiPolicyOverride
-	public static <T extends Scenario> void execute(SimpleJaxbBinder<T> scenarioBinder, T scenario) {
+	public static <T extends Scenario> void execute(ScenarioBinder scenarioBinder, T scenario) {
 		StringWriter out = new StringWriter();
 		//marshall
 		scenarioBinder.save(scenario, out);
@@ -254,7 +256,7 @@ public class Kitty implements ApplicationContextAware {
 		//print before execution
 		System.out.println(xml);
 		//unmarshall
-		T marshalled = scenarioBinder.load(xml);
+		Scenario marshalled = scenarioBinder.load(new StringReader(xml));
 		//execute
 		scenario.execute();
 		//print after execution

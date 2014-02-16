@@ -3,23 +3,22 @@
  */
 package net.anthavio.kitty;
 
-import net.anthavio.kitty.scenario.Scenario;
-import net.anthavio.xml.jaxb.SimpleJaxbBinder;
+import net.anthavio.kitty.scenario.ScenarioBinder;
 
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 
-
 /**
  * @author vanek
- *
- * I don't want public setters on Kitty so this FactoryBean will do the job in package visibility...
+ * 
+ *         I don't want public setters on Kitty so this FactoryBean will do the
+ *         job in package visibility...
  */
 public class KittyFactoryBean implements FactoryBean<Kitty>, InitializingBean {
 
 	private KittyOptions options;
 
-	private SimpleJaxbBinder<Scenario> scenarioBinder;
+	private ScenarioBinder scenarioBinder;
 
 	private Kitty kitty;
 
@@ -47,7 +46,7 @@ public class KittyFactoryBean implements FactoryBean<Kitty>, InitializingBean {
 		this.options = options;
 	}
 
-	public void setScenarioBinder(SimpleJaxbBinder<Scenario> scenarioBinder) {
+	public void setScenarioBinder(ScenarioBinder scenarioBinder) {
 		this.scenarioBinder = scenarioBinder;
 	}
 
